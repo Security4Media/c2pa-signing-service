@@ -99,6 +99,21 @@
   padding: 0;
   display: inline-flex;
   align-items: center;
+  gap: 0.8rem;
+}
+
+.md-header__button.md-logo::before {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: 0 0 auto;
+  background:
+    var(--brand-white)
+    url("../images/brand/logo-en-tete-blanche.png")
+    center / calc(100% - 0.7rem) calc(100% - 0.7rem)
+    no-repeat;
+  border-radius: 0.65rem;
 }
 
 .md-header__button.md-logo img,
@@ -109,7 +124,6 @@
   object-fit: contain;
   filter: brightness(0) invert(1);
 }
-
 
 .md-header__button[for="__drawer"] {
   flex: 0 0 auto;
@@ -177,6 +191,16 @@
 }
 
 @media screen and (max-width: 44.9844em) {
+  .md-header__button.md-logo {
+    gap: 0.5rem;
+  }
+
+  .md-header__button.md-logo::before {
+    width: 2.8rem;
+    height: 2.8rem;
+    background-size: calc(100% - 0.5rem) calc(100% - 0.5rem);
+  }
+
   .md-header__title {
     width: min(13rem, calc(100% - 8rem));
   }
