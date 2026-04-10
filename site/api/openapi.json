@@ -1,0 +1,769 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "C2PA Claim Generator HTTP API",
+    "description": "HTTP API for signing, packaging, and querying C2PA processing jobs.",
+    "version": "0.1.0"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "ApiErrorBody": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "details": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiErrorDetails"
+              }
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiErrorDetails": {
+        "type": "object",
+        "description": "Error details for API responses",
+        "properties": {
+          "field": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "input_index": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          }
+        }
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "description": "API error response structure",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ApiErrorBody"
+          }
+        }
+      },
+      "ApiInputRef": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "media_type",
+              "data_base64",
+              "type"
+            ],
+            "properties": {
+              "data_base64": {
+                "type": "string"
+              },
+              "filename": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "media_type": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "in_request"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "path",
+              "type"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "local_file_path"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "path",
+              "type"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "local_folder_path"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "url",
+              "type"
+            ],
+            "properties": {
+              "filename_hint": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "remote_file_url"
+                ]
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "url",
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "remote_folder_url"
+                ]
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "examples": [
+          {
+            "type": "local_file_path",
+            "path": "./fixtures/input/local-video.mp4"
+          },
+          {
+            "type": "remote_file_url",
+            "url": "https://media.example.com/input/video.mp4",
+            "filename_hint": "video.mp4"
+          },
+          {
+            "type": "remote_folder_url",
+            "url": "s3://media-bucket/input/publication/"
+          }
+        ]
+      },
+      "ApiOutputSpec": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "bucket",
+              "prefix",
+              "type"
+            ],
+            "properties": {
+              "bucket": {
+                "type": "string"
+              },
+              "prefix": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Output specification for API requests.\n\nThis enum supports request-selectable remote sinks.",
+        "examples": [
+          {
+            "type": "s3",
+            "bucket": "processed-media",
+            "prefix": "exports/c2pa"
+          }
+        ]
+      },
+      "C2paFragmentedParams": {
+        "type": "object",
+        "description": "Parameters for fragmented C2PA signing.",
+        "required": [
+          "publication_name",
+          "playlist_pattern",
+          "init_pattern",
+          "frag_pattern"
+        ],
+        "properties": {
+          "frag_pattern": {
+            "type": "string"
+          },
+          "init_pattern": {
+            "type": "string"
+          },
+          "playlist_pattern": {
+            "type": "string"
+          },
+          "publication_name": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "publication_name": "demo-publication",
+          "playlist_pattern": "**/*.m3u8",
+          "init_pattern": "**/init*.mp4",
+          "frag_pattern": "seg*.m4s"
+        }
+      },
+      "C2paFragmentedRequest": {
+        "type": "object",
+        "description": "Request for C2PA fragmented signing endpoint",
+        "required": [
+          "inputs",
+          "params"
+        ],
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiInputRef"
+            }
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProcessingOptions"
+              }
+            ]
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiOutputSpec"
+              }
+            ]
+          },
+          "params": {
+            "$ref": "#/components/schemas/C2paFragmentedParams"
+          }
+        },
+        "example": {
+          "inputs": [
+            {
+              "type": "local_folder_path",
+              "path": "./fixtures/input/publication"
+            },
+            {
+              "type": "remote_folder_url",
+              "url": "https://media.example.com/input/publication/"
+            },
+            {
+              "type": "remote_folder_url",
+              "url": "s3://media-bucket/input/publication/"
+            }
+          ],
+          "params": {
+            "publication_name": "demo-publication",
+            "playlist_pattern": "**/*.m3u8",
+            "init_pattern": "**/init*.mp4",
+            "frag_pattern": "seg*.m4s"
+          },
+          "options": {
+            "max_files_parallel": 2
+          },
+          "output": {
+            "type": "s3",
+            "bucket": "processed-media",
+            "prefix": "exports/c2pa"
+          }
+        }
+      },
+      "C2paPackageParams": {
+        "type": "object",
+        "description": "Parameters for package-and-sign processing.",
+        "required": [
+          "output_name"
+        ],
+        "properties": {
+          "frag_pattern": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "init_pattern": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output_name": {
+            "type": "string"
+          },
+          "playlist_pattern": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "example": {
+          "output_name": "publication",
+          "playlist_pattern": "**/*.m3u8",
+          "init_pattern": "**/init*.mp4",
+          "frag_pattern": "seg*.m4s"
+        }
+      },
+      "C2paPackageRequest": {
+        "type": "object",
+        "description": "Request for package and sign endpoint",
+        "required": [
+          "inputs",
+          "params"
+        ],
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiInputRef"
+            }
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProcessingOptions"
+              }
+            ]
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiOutputSpec"
+              }
+            ]
+          },
+          "params": {
+            "$ref": "#/components/schemas/C2paPackageParams"
+          }
+        },
+        "example": {
+          "inputs": [
+            {
+              "type": "local_folder_path",
+              "path": "./fixtures/input/publication"
+            },
+            {
+              "type": "remote_folder_url",
+              "url": "https://media.example.com/input/publication/"
+            },
+            {
+              "type": "remote_folder_url",
+              "url": "s3://media-bucket/input/publication/"
+            }
+          ],
+          "params": {
+            "output_name": "publication",
+            "playlist_pattern": "**/*.m3u8",
+            "init_pattern": "**/init*.mp4",
+            "frag_pattern": "seg*.m4s"
+          },
+          "options": {
+            "max_files_parallel": 2
+          },
+          "output": {
+            "type": "s3",
+            "bucket": "processed-media",
+            "prefix": "exports/c2pa"
+          }
+        }
+      },
+      "C2paVideoOptions": {
+        "type": "object",
+        "description": "C2PA video signing options.",
+        "properties": {
+          "in_place": {
+            "type": "boolean"
+          },
+          "timeout_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "C2paVideoParams": {
+        "type": "object",
+        "description": "Parameters for C2PA video signing.",
+        "properties": {
+          "options": {
+            "$ref": "#/components/schemas/C2paVideoOptions"
+          },
+          "output_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "example": {
+          "output_name": "video-signed.mp4",
+          "options": {
+            "timeout_ms": 2500,
+            "in_place": false
+          }
+        }
+      },
+      "C2paVideoRequest": {
+        "type": "object",
+        "description": "Request for C2PA video signing endpoint",
+        "required": [
+          "inputs"
+        ],
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiInputRef"
+            }
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProcessingOptions"
+              }
+            ]
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiOutputSpec"
+              }
+            ]
+          },
+          "params": {
+            "$ref": "#/components/schemas/C2paVideoParams"
+          }
+        },
+        "example": {
+          "inputs": [
+            {
+              "type": "local_file_path",
+              "path": "./fixtures/input/local-video.mp4"
+            },
+            {
+              "type": "remote_file_url",
+              "url": "https://media.example.com/input/video.mp4",
+              "filename_hint": "video.mp4"
+            },
+            {
+              "type": "remote_file_url",
+              "url": "s3://media-bucket/input/video.mp4",
+              "filename_hint": "video.mp4"
+            }
+          ],
+          "params": {
+            "output_name": "video-signed.mp4",
+            "options": {
+              "timeout_ms": 2500,
+              "in_place": false
+            }
+          },
+          "options": {
+            "max_files_parallel": 2
+          },
+          "output": {
+            "type": "s3",
+            "bucket": "processed-media",
+            "prefix": "exports/c2pa"
+          }
+        }
+      },
+      "JobResponse": {
+        "type": "object",
+        "description": "Response for async job submission",
+        "required": [
+          "job_id",
+          "status"
+        ],
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "JobResultResponse": {
+        "type": "object",
+        "description": "Complete job result response (for sync endpoints and status queries)",
+        "required": [
+          "job_id",
+          "status",
+          "results",
+          "timing"
+        ],
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessingResult"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "timing": {
+            "$ref": "#/components/schemas/JobTiming"
+          }
+        }
+      },
+      "JobTiming": {
+        "type": "object",
+        "description": "Timing information for a job",
+        "required": [
+          "queued_at"
+        ],
+        "properties": {
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "queued_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "PackageParams": {
+        "type": "object",
+        "description": "Parameters for media packaging.",
+        "required": [
+          "output_name"
+        ],
+        "properties": {
+          "output_name": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "output_name": "publication"
+        }
+      },
+      "PackageRequest": {
+        "type": "object",
+        "description": "Request to package media files",
+        "required": [
+          "inputs",
+          "params"
+        ],
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiInputRef"
+            }
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProcessingOptions"
+              }
+            ]
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiOutputSpec"
+              }
+            ]
+          },
+          "params": {
+            "$ref": "#/components/schemas/PackageParams"
+          }
+        },
+        "example": {
+          "inputs": [
+            {
+              "type": "local_folder_path",
+              "path": "./fixtures/input/publication"
+            },
+            {
+              "type": "remote_folder_url",
+              "url": "https://media.example.com/input/publication/"
+            },
+            {
+              "type": "remote_folder_url",
+              "url": "s3://media-bucket/input/publication/"
+            }
+          ],
+          "params": {
+            "output_name": "publication"
+          },
+          "options": {
+            "max_files_parallel": 2
+          },
+          "output": {
+            "type": "s3",
+            "bucket": "processed-media",
+            "prefix": "exports/c2pa"
+          }
+        }
+      },
+      "ProcessingOptions": {
+        "type": "object",
+        "description": "Processing options common to all processors",
+        "properties": {
+          "max_files_parallel": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Maximum number of files to process in parallel",
+            "minimum": 0
+          }
+        },
+        "example": {
+          "max_files_parallel": 2
+        }
+      },
+      "ProcessingResult": {
+        "type": "object",
+        "description": "Result for a single input in a job",
+        "required": [
+          "input_index",
+          "status"
+        ],
+        "properties": {
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "input_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "output_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Service health endpoints"
+    },
+    {
+      "name": "jobs",
+      "description": "Asynchronous job lifecycle endpoints"
+    },
+    {
+      "name": "c2pa-video",
+      "description": "C2PA signing for monolithic video assets"
+    },
+    {
+      "name": "c2pa-fragmented",
+      "description": "C2PA signing for fragmented video assets"
+    },
+    {
+      "name": "package",
+      "description": "HLS & DASH packaging only endpoints"
+    },
+    {
+      "name": "c2pa-package",
+      "description": "Combined package and sign endpoints"
+    },
+    {
+      "name": "softbinding",
+      "description": "Placeholder softbinding watermark endpoints"
+    }
+  ]
+}

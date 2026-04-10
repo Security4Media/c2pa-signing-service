@@ -1,0 +1,1825 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../quick-reference/">
+      
+      
+        <link rel="next" href="../curl-examples/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.32">
+    
+    
+      
+        <title>API Reference - C2PA Claim Generator</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.53a7feaf.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Manrope:300,300i,400,400i,500,500i,700,700i%7CIBM+Plex+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Manrope";--md-code-font:"IBM Plex Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/brand.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/home.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer" aria-label="Navigation"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="C2PA Claim Generator" class="md-header__button md-logo" aria-label="C2PA Claim Generator" data-md-component="logo">
+      
+  <img src="../../images/brand/logo-cr.svg" alt="C2PA Claim Generator">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            C2PA Claim Generator
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="C2PA Claim Generator" class="md-nav__button md-logo" aria-label="C2PA Claim Generator" data-md-component="logo">
+      
+  <img src="../../images/brand/logo-cr.svg" alt="C2PA Claim Generator">
+
+    </a>
+    C2PA Claim Generator
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/running-local/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running Local
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/running-with-s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running With S3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/api-docs-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Docs Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Quick Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#health-and-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health And Jobs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Health And Jobs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-v2health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /v2/health
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-v2jobsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /v2/jobs/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c2pa-video" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C2PA Video
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C2PA Video">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2c2pavideo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/c2pa/video
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncc2pavideo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/c2pa/video
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c2pa-fragmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C2PA Fragmented
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C2PA Fragmented">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2c2pafragmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/c2pa/fragmented
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncc2pafragmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/c2pa/fragmented
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#media-packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Media Packaging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Media Packaging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncpackage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-and-sign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package And Sign
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Package And Sign">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2c2papackage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/c2pa/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncc2papackage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/c2pa/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Selection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-gated-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feature-Gated Behavior
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Feature-Gated Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        openapi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalar-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scalar-docs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        s3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#watermark-placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watermark Placeholders
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Watermark Placeholders">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2watermark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/watermark
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-v2watermarkid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /v2/watermark/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../curl-examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API cURL Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/crate-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crate Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/processor-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Processor Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/testing-strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/handlers-quick-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handlers Quick Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../roadmap/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_16" id="__nav_16_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Roadmap
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/softbinding-insertion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Softbinding Insertion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/softbinding-manifest-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Softbinding Manifest Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/c2pa-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C2PA Orchestration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/multi-cloud-deployment-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Cloud Deployment Guides
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#health-and-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health And Jobs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Health And Jobs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-v2health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /v2/health
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-v2jobsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /v2/jobs/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c2pa-video" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C2PA Video
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C2PA Video">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2c2pavideo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/c2pa/video
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncc2pavideo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/c2pa/video
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c2pa-fragmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C2PA Fragmented
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="C2PA Fragmented">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2c2pafragmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/c2pa/fragmented
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncc2pafragmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/c2pa/fragmented
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#media-packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Media Packaging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Media Packaging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncpackage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-and-sign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package And Sign
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Package And Sign">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2c2papackage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/c2pa/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-v2syncc2papackage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/sync/c2pa/package
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Selection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-gated-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feature-Gated Behavior
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Feature-Gated Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        openapi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalar-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scalar-docs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        s3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#watermark-placeholders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watermark Placeholders
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Watermark Placeholders">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-v2watermark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /v2/watermark
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-v2watermarkid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /v2/watermark/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<p>This page is the canonical human-written contract for the current <code>service-http</code> v2 API. Use it for behavior, wire shape, and feature-gated capability notes. Use <a href="../curl-examples/">API cURL Examples</a> for runnable requests and <a href="../openapi.json">openapi.json</a> for the generated machine-readable specification built by <code>make docs</code>.</p>
+<h2 id="health-and-jobs">Health And Jobs<a class="headerlink" href="#health-and-jobs" title="Permanent link">&para;</a></h2>
+<h3 id="get-v2health"><code>GET /v2/health</code><a class="headerlink" href="#get-v2health" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: liveness and readiness probe for the HTTP service</li>
+<li>Success: <code>200 OK</code></li>
+<li>Body: empty</li>
+</ul>
+<h3 id="get-v2jobsid"><code>GET /v2/jobs/{id}</code><a class="headerlink" href="#get-v2jobsid" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: retrieve the current snapshot of an asynchronous or synchronous batch job</li>
+<li>Success: <code>200 OK</code> with <code>job_id</code>, top-level <code>status</code>, <code>results</code>, and <code>timing</code></li>
+<li>Errors:</li>
+<li><code>404 JOB_NOT_FOUND</code> when the batch ID does not exist</li>
+<li><code>500 PROCESSING_FAILED</code> or <code>500 INTERNAL_ERROR</code> for unexpected service-side failures</li>
+</ul>
+<h2 id="c2pa-video">C2PA Video<a class="headerlink" href="#c2pa-video" title="Permanent link">&para;</a></h2>
+<h3 id="post-v2c2pavideo"><code>POST /v2/c2pa/video</code><a class="headerlink" href="#post-v2c2pavideo" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: submit monolithic video signing as an asynchronous job</li>
+<li>Accepted inputs: file inputs only</li>
+<li><code>in_request</code></li>
+<li><code>local_file_path</code></li>
+<li><code>remote_file_url</code></li>
+<li>Request fields:</li>
+<li><code>inputs</code>: required, one or more file inputs</li>
+<li><code>params.output_name</code>: optional</li>
+<li><code>params.options.timeout_ms</code>: optional</li>
+<li><code>params.options.in_place</code>: optional</li>
+<li><code>output</code>: optional; omitted means configured local sink</li>
+<li><code>options.max_files_parallel</code>: optional</li>
+<li>Success: <code>200 OK</code> with <code>job_id</code> and <code>status = "queued"</code></li>
+<li>Errors:</li>
+<li><code>400 INVALID_INPUT_TYPE</code> for folder-style inputs</li>
+<li><code>400 VALIDATION_FAILED</code> for malformed or disallowed payloads</li>
+<li><code>500 PROCESSING_FAILED</code> or <code>500 INTERNAL_ERROR</code></li>
+</ul>
+<h3 id="post-v2syncc2pavideo"><code>POST /v2/sync/c2pa/video</code><a class="headerlink" href="#post-v2syncc2pavideo" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: submit monolithic video signing and poll until completion</li>
+<li>Accepted inputs: same as async endpoint</li>
+<li>Success: <code>200 OK</code> with final <code>JobResultResponse</code></li>
+<li>Timeout: <code>408 REQUEST_TIMEOUT</code> when the job does not finish within <code>server.sync_timeout_ms</code></li>
+<li>Errors: same validation and server-side failure model as the async endpoint</li>
+</ul>
+<h2 id="c2pa-fragmented">C2PA Fragmented<a class="headerlink" href="#c2pa-fragmented" title="Permanent link">&para;</a></h2>
+<h3 id="post-v2c2pafragmented"><code>POST /v2/c2pa/fragmented</code><a class="headerlink" href="#post-v2c2pafragmented" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: submit fragmented/HLS signing as an asynchronous job</li>
+<li>Accepted inputs: folder inputs only</li>
+<li><code>local_folder_path</code></li>
+<li><code>remote_folder_url</code></li>
+<li>Required params:</li>
+<li><code>publication_name</code></li>
+<li><code>playlist_pattern</code></li>
+<li><code>init_pattern</code></li>
+<li><code>frag_pattern</code></li>
+<li>Success: <code>200 OK</code> with queued job response</li>
+<li>Errors:</li>
+<li><code>400 INVALID_INPUT_TYPE</code> for file inputs</li>
+<li><code>400 VALIDATION_FAILED</code></li>
+<li><code>500 PROCESSING_FAILED</code> or <code>500 INTERNAL_ERROR</code></li>
+</ul>
+<h3 id="post-v2syncc2pafragmented"><code>POST /v2/sync/c2pa/fragmented</code><a class="headerlink" href="#post-v2syncc2pafragmented" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: submit fragmented/HLS signing and wait for completion</li>
+<li>Accepted inputs: same as async endpoint</li>
+<li>Success: <code>200 OK</code> with final <code>JobResultResponse</code></li>
+<li>Timeout: <code>408 REQUEST_TIMEOUT</code></li>
+<li>Errors: same validation and server-side failure model as the async endpoint</li>
+</ul>
+<h2 id="media-packaging">Media Packaging<a class="headerlink" href="#media-packaging" title="Permanent link">&para;</a></h2>
+<h3 id="post-v2package"><code>POST /v2/package</code><a class="headerlink" href="#post-v2package" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: submit packaging-only processing as an asynchronous job</li>
+<li>Accepted inputs: folder inputs only</li>
+<li><code>local_folder_path</code></li>
+<li><code>remote_folder_url</code></li>
+<li>Required params:</li>
+<li><code>output_name</code></li>
+<li>Success: <code>200 OK</code> with queued job response</li>
+<li>Errors:</li>
+<li><code>400 INVALID_INPUT_TYPE</code></li>
+<li><code>400 VALIDATION_FAILED</code></li>
+<li><code>500 PROCESSING_FAILED</code> or <code>500 INTERNAL_ERROR</code></li>
+</ul>
+<h3 id="post-v2syncpackage"><code>POST /v2/sync/package</code><a class="headerlink" href="#post-v2syncpackage" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: package media and wait for terminal job state</li>
+<li>Accepted inputs: same as async endpoint</li>
+<li>Success: <code>200 OK</code> with final <code>JobResultResponse</code></li>
+<li>Timeout: <code>408 REQUEST_TIMEOUT</code></li>
+<li>Errors: same validation and server-side failure model as the async endpoint</li>
+</ul>
+<h2 id="package-and-sign">Package And Sign<a class="headerlink" href="#package-and-sign" title="Permanent link">&para;</a></h2>
+<h3 id="post-v2c2papackage"><code>POST /v2/c2pa/package</code><a class="headerlink" href="#post-v2c2papackage" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: package media and apply C2PA signing in one asynchronous job</li>
+<li>Accepted inputs: folder inputs only</li>
+<li><code>local_folder_path</code></li>
+<li><code>remote_folder_url</code></li>
+<li>Required params:</li>
+<li><code>output_name</code></li>
+<li>Optional params:</li>
+<li><code>playlist_pattern</code></li>
+<li><code>init_pattern</code></li>
+<li><code>frag_pattern</code></li>
+<li>Success: <code>200 OK</code> with queued job response</li>
+<li>Errors:</li>
+<li><code>400 INVALID_INPUT_TYPE</code></li>
+<li><code>400 VALIDATION_FAILED</code></li>
+<li><code>500 PROCESSING_FAILED</code> or <code>500 INTERNAL_ERROR</code></li>
+</ul>
+<h3 id="post-v2syncc2papackage"><code>POST /v2/sync/c2pa/package</code><a class="headerlink" href="#post-v2syncc2papackage" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: package and sign while waiting for completion</li>
+<li>Accepted inputs: same as async endpoint</li>
+<li>Success: <code>200 OK</code> with final <code>JobResultResponse</code></li>
+<li>Timeout: <code>408 REQUEST_TIMEOUT</code></li>
+<li>Errors: same validation and server-side failure model as the async endpoint</li>
+</ul>
+<h2 id="output-selection">Output Selection<a class="headerlink" href="#output-selection" title="Permanent link">&para;</a></h2>
+<ul>
+<li>If <code>output</code> is omitted or <code>null</code>, artifacts go to the configured local sink rooted at <code>output_sinks.local.base_dir</code>.</li>
+<li><code>output.type = "s3"</code> is available only when the service is built with <code>--features s3</code> and the requested bucket is present in <code>output_sinks.s3.buckets</code>.</li>
+<li>There is no supported request output type named <code>local_path</code>.</li>
+</ul>
+<h2 id="feature-gated-behavior">Feature-Gated Behavior<a class="headerlink" href="#feature-gated-behavior" title="Permanent link">&para;</a></h2>
+<h3 id="openapi"><code>openapi</code><a class="headerlink" href="#openapi" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Exposes the runtime machine-readable spec at <code>/openapi.json</code></li>
+<li>Enables generation of the docs-site raw spec through <code>make docs-openapi</code></li>
+</ul>
+<h3 id="scalar-docs"><code>scalar-docs</code><a class="headerlink" href="#scalar-docs" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Extends <code>openapi</code></li>
+<li>Exposes the Scalar UI at <code>/docs</code></li>
+</ul>
+<h3 id="s3"><code>s3</code><a class="headerlink" href="#s3" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Enables S3-backed remote inputs</li>
+<li>Enables request-selected S3 output destinations</li>
+<li>The docs build uses the full documentation profile and generates the raw spec with <code>openapi</code> and <code>s3</code> enabled</li>
+</ul>
+<h2 id="watermark-placeholders">Watermark Placeholders<a class="headerlink" href="#watermark-placeholders" title="Permanent link">&para;</a></h2>
+<h3 id="post-v2watermark"><code>POST /v2/watermark</code><a class="headerlink" href="#post-v2watermark" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: reserved placeholder for future softbinding watermark creation</li>
+<li>Current behavior: <code>501 Not Implemented</code></li>
+<li>Body: plain text <code>Coming soon</code></li>
+</ul>
+<h3 id="get-v2watermarkid"><code>GET /v2/watermark/{id}</code><a class="headerlink" href="#get-v2watermarkid" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Purpose: reserved placeholder for future softbinding watermark retrieval</li>
+<li>Current behavior: <code>501 Not Implemented</code></li>
+<li>Body: plain text <code>Coming soon</code></li>
+</ul>
+<h2 id="error-model">Error Model<a class="headerlink" href="#error-model" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>HTTP Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INVALID_INPUT_TYPE</code></td>
+<td>400</td>
+<td>Processor received a mismatched input category</td>
+</tr>
+<tr>
+<td><code>VALIDATION_FAILED</code></td>
+<td>400</td>
+<td>Request fields or selected output failed validation</td>
+</tr>
+<tr>
+<td><code>JOB_NOT_FOUND</code></td>
+<td>404</td>
+<td>The requested batch ID does not exist</td>
+</tr>
+<tr>
+<td><code>REQUEST_TIMEOUT</code></td>
+<td>408</td>
+<td>Sync polling exceeded <code>server.sync_timeout_ms</code></td>
+</tr>
+<tr>
+<td><code>PROCESSING_FAILED</code></td>
+<td>500</td>
+<td>Job execution failed while resolving, processing, or writing outputs</td>
+</tr>
+<tr>
+<td><code>INTERNAL_ERROR</code></td>
+<td>500</td>
+<td>Unexpected internal service failure</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-circle-arrow-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 16V8"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation.sections","navigation.indexes","navigation.top","navigation.path","toc.follow"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.91a19a9e.min.js"></script>
+      
+        <script src="../../javascripts/openapi-viewer-link.js"></script>
+      
+    
+  </body>
+</html>
