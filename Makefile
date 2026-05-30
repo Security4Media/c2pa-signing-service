@@ -4,7 +4,7 @@ VENV_PYTHON := $(VENV_DIR)/bin/python
 ZENSICAL := $(VENV_DIR)/bin/zensical
 OPENAPI_SPEC := docs/api/openapi.json
 
-.PHONY: docs-bootstrap docs docs-serve docs-check docs-openapi-check
+.PHONY: docs-bootstrap docs docs-serve docs-check docs-openapi-check docs-link-check
 
 docs-bootstrap:
 	$(PYTHON) -m venv $(VENV_DIR)
@@ -13,11 +13,14 @@ docs-bootstrap:
 docs-openapi-check:
 	$(PYTHON) scripts/docs/check_openapi.py $(OPENAPI_SPEC)
 
+docs-link-check:
+	$(PYTHON) scripts/docs/check_internal_links.py README.md docs
+
 docs: docs-bootstrap docs-openapi-check
 	$(ZENSICAL) build --config-file zensical.toml --clean
 
 docs-serve: docs-bootstrap docs-openapi-check
 	$(ZENSICAL) serve --config-file zensical.toml
 
-docs-check: docs-bootstrap docs-openapi-check
+docs-check: docs-bootstrap docs-openapi-check docs-link-check
 	$(ZENSICAL) build --config-file zensical.toml --clean
