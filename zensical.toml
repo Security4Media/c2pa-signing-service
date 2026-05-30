@@ -1,0 +1,62 @@
+[project]
+site_name = "C2PA Signing Service"
+docs_dir = "docs"
+site_dir = "site"
+dev_addr = "localhost:8000"
+site_url = "https://security4media.github.io/c2pa-signing-service/"
+repo_url = "https://github.com/Security4Media/c2pa-signing-service"
+extra_css = ["stylesheets/brand.css", "stylesheets/home.css"]
+extra_javascript = ["javascripts/openapi-viewer-link.js"]
+nav = [
+  {"Home" = "README.md"},
+  {"Getting Started" = "guides/getting-started.md"},
+  {"Running Local" = "guides/running-local.md"},
+  {"Running With S3" = "guides/running-with-s3.md"},
+  {"API Docs Mode" = "guides/api-docs-mode.md"},
+  {"Configuration" = "guides/configuration.md"},
+  {"Troubleshooting" = "guides/troubleshooting.md"},
+  {"API Quick Reference" = "api/quick-reference.md"},
+  {"API Reference" = "api/reference.md"},
+  {"API cURL Examples" = "api/curl-examples.md"},
+  {"Roadmap" = [
+    "roadmap/README.md",
+    {"Softbinding Insertion" = "roadmap/softbinding-insertion.md"},
+    {"Softbinding Manifest Storage" = "roadmap/softbinding-manifest-storage.md"},
+    {"C2PA Orchestration" = "roadmap/c2pa-orchestration.md"},
+    {"Multi-Cloud Deployment Guides" = "roadmap/multi-cloud-deployment-guides.md"},
+    {"C2PA Image Signing" = "roadmap/c2pa-image-signing.md"},
+    {"Authentication And Authorization" = "roadmap/authentication-and-authorization.md"},
+    {"Job Completion Webhooks" = "roadmap/job-completion-webhooks.md"},
+    {"Expanded Resolvers And Sinks" = "roadmap/expanded-resolvers-and-sinks.md"},
+    {"Persistent Job Storage" = "roadmap/persistent-job-storage.md"},
+    {"Live DASH Streaming" = "roadmap/live-dash-streaming.md"}
+  ]}
+]
+
+[project.theme]
+variant = "modern"
+language = "en"
+logo = "images/brand/logo-cr.svg"
+features = [
+  "navigation.sections",
+  "navigation.indexes",
+  "navigation.top",
+  "navigation.path",
+  "toc.follow"
+]
+font.text = "Manrope"
+font.code = "IBM Plex Mono"
+
+[[project.theme.palette]]
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to light mode"
