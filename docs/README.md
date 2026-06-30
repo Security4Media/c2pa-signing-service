@@ -103,7 +103,7 @@ hide:
   <a class="brand-card" href="api/curl-examples/">
     <p class="brand-card__eyebrow">Execution</p>
     <p class="brand-card__title">cURL Examples</p>
-    <p class="brand-card__copy">Concrete request payloads for signing, fragmented publishing, packaging, and package+sign flows.</p>
+    <p class="brand-card__copy">Concrete request payloads for signing, fragmented publishing, packaging, package+sign, custom assertions, and parent provenance.</p>
   </a>
   <a
     class="brand-card"

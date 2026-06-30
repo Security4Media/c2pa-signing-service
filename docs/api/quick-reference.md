@@ -117,10 +117,19 @@ Notes:
     "options": {
       "timeout_ms": 2500,
       "in_place": false
+    },
+    "assertions": [
+      { "label": "com.example.rights", "data": { "owner": "ACME Media" } }
+    ],
+    "parent": {
+      "type": "file",
+      "source": { "type": "local_file_path", "path": "./parent.mp4" }
     }
   }
 }
 ```
+
+`assertions`, `parent`, and `parent_overrides` are accepted by all three C2PA endpoints (`/v2/c2pa/video`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) and can be combined in one request. They do not apply to the packaging-only `/v2/package` endpoint. See [Custom Assertions](reference.md#custom-assertions) and [Parent Provenance](reference.md#parent-provenance).
 
 ### C2PA Fragmented
 
@@ -130,7 +139,14 @@ Notes:
     "publication_name": "demo-publication",
     "playlist_pattern": "**/*.m3u8",
     "init_pattern": "**/init*.mp4",
-    "frag_pattern": "seg*.m4s"
+    "frag_pattern": "seg*.m4s",
+    "assertions": [
+      { "label": "com.example.rights", "data": { "owner": "ACME Media" } }
+    ],
+    "parent": {
+      "type": "file",
+      "source": { "type": "local_file_path", "path": "./parent.mp4" }
+    }
   }
 }
 ```
@@ -153,7 +169,11 @@ Notes:
     "output_name": "publication",
     "playlist_pattern": "**/*.m3u8",
     "init_pattern": "**/init*.mp4",
-    "frag_pattern": "seg*.m4s"
+    "frag_pattern": "seg*.m4s",
+    "assertions": [
+      { "label": "com.example.rights", "data": { "owner": "ACME Media" } }
+    ],
+    "parent": { "type": "reference", "reference": "urn:example:parent-asset" }
   }
 }
 ```

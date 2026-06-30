@@ -57,6 +57,32 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
   }'
 ```
 
+### With Custom Assertions And Parent File
+
+Custom assertions embed arbitrary JSON in the signed manifest; a parent file is read for its embedded C2PA manifest and attached as a provenance ingredient.
+
+```bash
+curl -X POST http://localhost:8080/v2/sync/c2pa/video \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      { "type": "local_file_path", "path": "./tests/fixtures/video/mp4/video1.mp4" }
+    ],
+    "params": {
+      "output_name": "signed-video.mp4",
+      "assertions": [
+        { "label": "com.example.rights", "data": { "owner": "ACME Media", "license": "CC-BY-4.0" } }
+      ],
+      "parent": {
+        "type": "file",
+        "source": { "type": "local_file_path", "path": "./tests/fixtures/video/mp4/parent.mp4" }
+      }
+    }
+  }'
+```
+
+Custom assertions and parent provenance work on all three C2PA endpoints (`/v2/c2pa/video`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) under `params.assertions`, `params.parent`, and `params.parent_overrides`, and can be combined in one request. The fragmented and package examples below show the same fields. See [Custom Assertions](reference.md#custom-assertions) and [Parent Provenance](reference.md#parent-provenance).
+
 ## C2PA Fragmented Signing
 
 ### Async
@@ -97,6 +123,33 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/fragmented \
       "playlist_pattern": "**/*.m3u8",
       "init_pattern": "**/init*.mp4",
       "frag_pattern": "seg*.m4s"
+    }
+  }'
+```
+
+### With Custom Assertions And Parent
+
+The same `assertions`, `parent`, and `parent_overrides` fields used for video apply here. They are embedded into every signed init segment of the publication.
+
+```bash
+curl -X POST http://localhost:8080/v2/sync/c2pa/fragmented \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      { "type": "local_folder_path", "path": "./tests/fixtures/hls/publication" }
+    ],
+    "params": {
+      "publication_name": "signed-publication",
+      "playlist_pattern": "**/*.m3u8",
+      "init_pattern": "**/init*.mp4",
+      "frag_pattern": "seg*.m4s",
+      "assertions": [
+        { "label": "com.example.rights", "data": { "owner": "ACME Media", "license": "CC-BY-4.0" } }
+      ],
+      "parent": {
+        "type": "file",
+        "source": { "type": "local_file_path", "path": "./tests/fixtures/video/mp4/parent.mp4" }
+      }
     }
   }'
 ```
@@ -176,6 +229,27 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/package \
     ],
     "params": {
       "output_name": "publication"
+    }
+  }'
+```
+
+### With Custom Assertions And Parent
+
+Packaging and signing accepts the same `assertions`, `parent`, and `parent_overrides` fields. Here a reference-style parent is attached as a bare provenance ingredient.
+
+```bash
+curl -X POST http://localhost:8080/v2/sync/c2pa/package \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      { "type": "local_folder_path", "path": "./tests/fixtures/video/mp4" }
+    ],
+    "params": {
+      "output_name": "publication",
+      "assertions": [
+        { "label": "com.example.rights", "data": { "owner": "ACME Media" } }
+      ],
+      "parent": { "type": "reference", "reference": "urn:example:parent-asset" }
     }
   }'
 ```

@@ -974,6 +974,23 @@
   },
   "components": {
     "schemas": {
+      "ApiAssertionDef": {
+        "type": "object",
+        "description": "A single custom assertion to embed in the C2PA manifest.\n\nOnly JSON payloads are accepted at this endpoint. Use a reverse-domain label\n(`com.example.label`) to avoid collisions with standard C2PA assertions.",
+        "required": [
+          "label",
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "description": "Arbitrary JSON payload embedded in the manifest assertion."
+          },
+          "label": {
+            "type": "string",
+            "description": "Assertion label, e.g. `\"com.example.rights\"`."
+          }
+        }
+      },
       "ApiErrorBody": {
         "type": "object",
         "required": [
@@ -1189,6 +1206,120 @@
           }
         ]
       },
+      "ApiParent": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Opaque reference token (no file resolved; bare ingredient).",
+            "required": [
+              "reference",
+              "type"
+            ],
+            "properties": {
+              "reference": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "reference"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Actual media file whose C2PA manifest is read and included in the chain.",
+            "required": [
+              "source",
+              "type"
+            ],
+            "properties": {
+              "source": {
+                "$ref": "#/components/schemas/ApiParentFileSource"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "file"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Global or per-input parent manifest source."
+      },
+      "ApiParentFileSource": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "path",
+              "type"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "local_file_path"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "url",
+              "type"
+            ],
+            "properties": {
+              "filename_hint": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "remote_file_url"
+                ]
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "description": "Allowed input types for a file-based parent. Only single-file variants."
+      },
+      "ApiParentOverride": {
+        "type": "object",
+        "description": "Per-input parent override.",
+        "required": [
+          "input_index"
+        ],
+        "properties": {
+          "input_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiParent",
+                "description": "None = disable parent for this input."
+              }
+            ]
+          }
+        }
+      },
       "C2paFragmentedParams": {
         "type": "object",
         "description": "Parameters for fragmented C2PA signing.",
@@ -1199,11 +1330,36 @@
           "frag_pattern"
         ],
         "properties": {
+          "assertions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiAssertionDef"
+            },
+            "description": "Optional custom assertions to embed in the C2PA manifest."
+          },
           "frag_pattern": {
             "type": "string"
           },
           "init_pattern": {
             "type": "string"
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiParent",
+                "description": "Optional parent manifest to attach as a provenance ingredient."
+              }
+            ]
+          },
+          "parent_overrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiParentOverride"
+            },
+            "description": "Per-input overrides for the parent manifest."
           },
           "playlist_pattern": {
             "type": "string"
@@ -1295,6 +1451,13 @@
           "output_name"
         ],
         "properties": {
+          "assertions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiAssertionDef"
+            },
+            "description": "Optional custom assertions to embed in the C2PA manifest."
+          },
           "frag_pattern": {
             "type": [
               "string",
@@ -1309,6 +1472,24 @@
           },
           "output_name": {
             "type": "string"
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiParent",
+                "description": "Optional parent manifest to attach as a provenance ingredient."
+              }
+            ]
+          },
+          "parent_overrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiParentOverride"
+            },
+            "description": "Per-input overrides for the parent manifest."
           },
           "playlist_pattern": {
             "type": [
@@ -1414,6 +1595,13 @@
         "type": "object",
         "description": "Parameters for C2PA video signing.",
         "properties": {
+          "assertions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiAssertionDef"
+            },
+            "description": "Optional custom assertions to embed in the C2PA manifest."
+          },
           "options": {
             "$ref": "#/components/schemas/C2paVideoOptions"
           },
@@ -1422,6 +1610,24 @@
               "string",
               "null"
             ]
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiParent",
+                "description": "Optional parent manifest to attach as a provenance ingredient."
+              }
+            ]
+          },
+          "parent_overrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiParentOverride"
+            },
+            "description": "Per-input overrides for the parent manifest."
           }
         },
         "example": {
