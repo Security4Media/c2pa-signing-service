@@ -83,6 +83,7 @@ pipeline_config_path = "config/media-packager/media_packager_pipeline.toml"
 ### `output_sinks.local`
 
 - `base_dir`: base directory for persisted outputs
+- `naming`: file-leaf naming mode for single-file outputs written to this sink; `"derived"` (default, appends `_c2pa`) or `"in_place"` (keep the input filename). Folder/publication outputs always use the input folder name.
 
 ### `output_sinks.s3`
 
@@ -93,14 +94,15 @@ pipeline_config_path = "config/media-packager/media_packager_pipeline.toml"
 - `force_path_style`: enable path-style addressing
 - `buckets`: writable bucket allow-list for request-selected S3 outputs
 - `base_prefix`: optional shared prefix prepended to every uploaded object key
+- `naming`: file-leaf naming mode for single-file outputs, same values and default as `output_sinks.local.naming`
 
 Behavior:
 
 - there is no default S3 output bucket
-- request payloads must explicitly choose `output.type = "s3"` with `bucket` and `prefix`
+- a request selects S3 output with `output.type = "s3"` and a `bucket`; `output.type = "local"` (or omitting `output`) targets the local sink instead
 - only configured buckets are accepted
 - configured output buckets are write-probed during startup
-- `prefix = "/"` writes directly under the configured `base_prefix` root; if no `base_prefix` is configured, objects are written at the bucket root under the batch prefix
+- object keys are composed as `base_prefix / output.prefix / output.name / <per-input-leaf>`; there is no job/batch id segment. `output.prefix = "/"` (or omitted) writes directly under `base_prefix`; if no `base_prefix` is configured, keys start at the bucket root. Reusing a destination overwrites it.
 
 ### `processors`
 
@@ -183,15 +185,18 @@ Examples:
 
 ## Request Output Types
 
-Current supported output types:
+The `output` section selects the destination and placement. Supported types:
 
-- configured local output by omitting the `output` field
-- `s3` when the service is built with the `s3` feature and output buckets are configured
+- `local` — writes under `output_sinks.local.base_dir` on the service host (dev/self-host). Omitting `output` is equivalent to `{"type": "local"}` with no fields.
+- `s3` — writes to object storage; requires the `s3` build feature and a configured bucket.
+
+Both accept optional `prefix` and `name`. The file-leaf naming mode is not a request field; it is configured per output sink (`output_sinks.*.naming`, see above). See [Output Selection](../api/reference.md#output-selection) for the full contract.
 
 Examples:
 
 ```json
 null
-{"type": "s3", "bucket": "processed-media", "prefix": "c2pa/video"}
+{"type": "local", "name": "spring-campaign"}
+{"type": "s3", "bucket": "processed-media", "prefix": "c2pa/video", "name": "spring-campaign"}
 {"type": "s3", "bucket": "processed-media", "prefix": "/"}
 ```

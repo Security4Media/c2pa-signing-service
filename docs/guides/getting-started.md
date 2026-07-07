@@ -88,8 +88,10 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
         "path": "./tests/fixtures/video/mp4/video1.mp4"
       }
     ],
-    "params": {
-      "output_name": "signed-video.mp4"
+    "params": {},
+    "output": {
+      "type": "local",
+      "name": "signed-videos"
     }
   }'
 ```
@@ -104,7 +106,7 @@ Example response:
     {
       "input_index": 0,
       "status": "succeeded",
-      "output_path": "./.artifacts/output/batch-1/signed-video.mp4"
+      "output_path": "./.artifacts/output/signed-videos/video1_c2pa.mp4"
     }
   ],
   "timing": {
@@ -159,8 +161,10 @@ curl -X POST http://localhost:8080/v2/sync/package \
         "path": "./tests/fixtures/video/mp4"
       }
     ],
-    "params": {
-      "output_name": "publication"
+    "params": {},
+    "output": {
+      "type": "local",
+      "name": "publications"
     }
   }'
 ```

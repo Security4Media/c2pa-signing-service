@@ -1177,16 +1177,50 @@
           {
             "type": "object",
             "required": [
+              "type"
+            ],
+            "properties": {
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "prefix": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "local"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
               "bucket",
-              "prefix",
               "type"
             ],
             "properties": {
               "bucket": {
                 "type": "string"
               },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "prefix": {
-                "type": "string"
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "type": {
                 "type": "string",
@@ -1197,12 +1231,13 @@
             }
           }
         ],
-        "description": "Output specification for API requests.\n\nThis enum supports request-selectable remote sinks.",
+        "description": "Output specification for API requests.\n\nThe `output` section selects the destination and placement: `prefix` is an\noptional caller namespace and `name` an optional logical output folder/base;\neach input contributes its own leaf. The file-leaf naming convention is\nconfigured per output sink in the service config, not per request. Omitting\n`output` is equivalent to `local` with no fields.",
         "examples": [
           {
             "type": "s3",
             "bucket": "processed-media",
-            "prefix": "exports/c2pa"
+            "prefix": "exports/c2pa",
+            "name": "demo-publication"
           }
         ]
       },
@@ -1324,7 +1359,6 @@
         "type": "object",
         "description": "Parameters for fragmented C2PA signing.",
         "required": [
-          "publication_name",
           "playlist_pattern",
           "init_pattern",
           "frag_pattern"
@@ -1363,13 +1397,9 @@
           },
           "playlist_pattern": {
             "type": "string"
-          },
-          "publication_name": {
-            "type": "string"
           }
         },
         "example": {
-          "publication_name": "demo-publication",
           "playlist_pattern": "**/*.m3u8",
           "init_pattern": "**/init*.mp4",
           "frag_pattern": "seg*.m4s"
@@ -1429,7 +1459,6 @@
             }
           ],
           "params": {
-            "publication_name": "demo-publication",
             "playlist_pattern": "**/*.m3u8",
             "init_pattern": "**/init*.mp4",
             "frag_pattern": "seg*.m4s"
@@ -1440,16 +1469,14 @@
           "output": {
             "type": "s3",
             "bucket": "processed-media",
-            "prefix": "exports/c2pa"
+            "prefix": "exports/c2pa",
+            "name": "demo-publication"
           }
         }
       },
       "C2paPackageParams": {
         "type": "object",
         "description": "Parameters for package-and-sign processing.",
-        "required": [
-          "output_name"
-        ],
         "properties": {
           "assertions": {
             "type": "array",
@@ -1469,9 +1496,6 @@
               "string",
               "null"
             ]
-          },
-          "output_name": {
-            "type": "string"
           },
           "parent": {
             "oneOf": [
@@ -1499,7 +1523,6 @@
           }
         },
         "example": {
-          "output_name": "publication",
           "playlist_pattern": "**/*.m3u8",
           "init_pattern": "**/init*.mp4",
           "frag_pattern": "seg*.m4s"
@@ -1559,7 +1582,6 @@
             }
           ],
           "params": {
-            "output_name": "publication",
             "playlist_pattern": "**/*.m3u8",
             "init_pattern": "**/init*.mp4",
             "frag_pattern": "seg*.m4s"
@@ -1570,7 +1592,8 @@
           "output": {
             "type": "s3",
             "bucket": "processed-media",
-            "prefix": "exports/c2pa"
+            "prefix": "exports/c2pa",
+            "name": "demo-publication"
           }
         }
       },
@@ -1578,9 +1601,6 @@
         "type": "object",
         "description": "C2PA video signing options.",
         "properties": {
-          "in_place": {
-            "type": "boolean"
-          },
           "timeout_ms": {
             "type": [
               "integer",
@@ -1605,12 +1625,6 @@
           "options": {
             "$ref": "#/components/schemas/C2paVideoOptions"
           },
-          "output_name": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
           "parent": {
             "oneOf": [
               {
@@ -1631,10 +1645,8 @@
           }
         },
         "example": {
-          "output_name": "video-signed.mp4",
           "options": {
-            "timeout_ms": 2500,
-            "in_place": false
+            "timeout_ms": 2500
           }
         }
       },
@@ -1693,10 +1705,8 @@
             }
           ],
           "params": {
-            "output_name": "video-signed.mp4",
             "options": {
-              "timeout_ms": 2500,
-              "in_place": false
+              "timeout_ms": 2500
             }
           },
           "options": {
@@ -1705,7 +1715,8 @@
           "output": {
             "type": "s3",
             "bucket": "processed-media",
-            "prefix": "exports/c2pa"
+            "prefix": "exports/c2pa",
+            "name": "demo-publication"
           }
         }
       },
@@ -1781,18 +1792,8 @@
       },
       "PackageParams": {
         "type": "object",
-        "description": "Parameters for media packaging.",
-        "required": [
-          "output_name"
-        ],
-        "properties": {
-          "output_name": {
-            "type": "string"
-          }
-        },
-        "example": {
-          "output_name": "publication"
-        }
+        "description": "Parameters for media packaging.\n\nThe output destination and name now live in the request `output` section, so\nthis carries no fields; it is retained for a stable request/schema shape.",
+        "example": {}
       },
       "PackageRequest": {
         "type": "object",
@@ -1847,16 +1848,15 @@
               "url": "s3://media-bucket/input/publication/"
             }
           ],
-          "params": {
-            "output_name": "publication"
-          },
+          "params": {},
           "options": {
             "max_files_parallel": 2
           },
           "output": {
             "type": "s3",
             "bucket": "processed-media",
-            "prefix": "exports/c2pa"
+            "prefix": "exports/c2pa",
+            "name": "demo-publication"
           }
         }
       },

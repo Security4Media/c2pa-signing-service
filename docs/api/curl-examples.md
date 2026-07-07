@@ -27,11 +27,13 @@ curl -X POST http://localhost:8080/v2/c2pa/video \
       }
     ],
     "params": {
-      "output_name": "signed-video.mp4",
       "options": {
-        "timeout_ms": 2500,
-        "in_place": false
+        "timeout_ms": 2500
       }
+    },
+    "output": {
+      "type": "local",
+      "name": "signed-videos"
     },
     "options": {
       "max_files_parallel": 2
@@ -51,9 +53,7 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
         "path": "./tests/fixtures/video/mp4/video1.mp4"
       }
     ],
-    "params": {
-      "output_name": "signed-video.mp4"
-    }
+    "params": {}
   }'
 ```
 
@@ -69,7 +69,6 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
       { "type": "local_file_path", "path": "./tests/fixtures/video/mp4/video1.mp4" }
     ],
     "params": {
-      "output_name": "signed-video.mp4",
       "assertions": [
         { "label": "com.example.rights", "data": { "owner": "ACME Media", "license": "CC-BY-4.0" } }
       ],
@@ -98,7 +97,6 @@ curl -X POST http://localhost:8080/v2/c2pa/fragmented \
       }
     ],
     "params": {
-      "publication_name": "demo-publication",
       "playlist_pattern": "**/*.m3u8",
       "init_pattern": "**/init*.mp4",
       "frag_pattern": "seg*.m4s"
@@ -119,7 +117,6 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/fragmented \
       }
     ],
     "params": {
-      "publication_name": "signed-publication",
       "playlist_pattern": "**/*.m3u8",
       "init_pattern": "**/init*.mp4",
       "frag_pattern": "seg*.m4s"
@@ -139,7 +136,6 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/fragmented \
       { "type": "local_folder_path", "path": "./tests/fixtures/hls/publication" }
     ],
     "params": {
-      "publication_name": "signed-publication",
       "playlist_pattern": "**/*.m3u8",
       "init_pattern": "**/init*.mp4",
       "frag_pattern": "seg*.m4s",
@@ -168,9 +164,7 @@ curl -X POST http://localhost:8080/v2/package \
         "path": "./tests/fixtures/video/mp4"
       }
     ],
-    "params": {
-      "output_name": "publication"
-    }
+    "params": {}
   }'
 ```
 
@@ -186,9 +180,7 @@ curl -X POST http://localhost:8080/v2/sync/package \
         "path": "./tests/fixtures/video/mp4"
       }
     ],
-    "params": {
-      "output_name": "publication"
-    }
+    "params": {}
   }'
 ```
 
@@ -207,7 +199,6 @@ curl -X POST http://localhost:8080/v2/c2pa/package \
       }
     ],
     "params": {
-      "output_name": "publication",
       "playlist_pattern": "**/*.m3u8",
       "init_pattern": "**/init*.mp4",
       "frag_pattern": "seg*.m4s"
@@ -227,9 +218,7 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/package \
         "path": "./tests/fixtures/video/mp4"
       }
     ],
-    "params": {
-      "output_name": "publication"
-    }
+    "params": {}
   }'
 ```
 
@@ -245,7 +234,6 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/package \
       { "type": "local_folder_path", "path": "./tests/fixtures/video/mp4" }
     ],
     "params": {
-      "output_name": "publication",
       "assertions": [
         { "label": "com.example.rights", "data": { "owner": "ACME Media" } }
       ],
@@ -276,7 +264,7 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
 
 ## Request-Selected S3 Output
 
-Available only when the service is built with `--features s3` and the target bucket is configured in `output_sinks.s3.buckets`.
+Available only when the service is built with `--features s3` and the target bucket is configured in `output_sinks.s3.buckets`. Naming lives in the `output` section; the object key is `base_prefix / prefix / name / <per-input-leaf>` (here `.../exports/c2pa/spring-campaign/video_c2pa.mp4`).
 
 ```bash
 curl -X POST http://localhost:8080/v2/c2pa/video \
@@ -289,13 +277,31 @@ curl -X POST http://localhost:8080/v2/c2pa/video \
         "filename_hint": "video.mp4"
       }
     ],
-    "params": {
-      "output_name": "signed-video.mp4"
-    },
+    "params": {},
     "output": {
       "type": "s3",
       "bucket": "processed-media",
-      "prefix": "exports/c2pa"
+      "prefix": "exports/c2pa",
+      "name": "spring-campaign"
+    }
+  }'
+```
+
+## Request-Selected Local Output
+
+The `local` variant writes to the service host's filesystem under `output_sinks.local.base_dir` (useful for local or self-hosted runs). Whether single-file outputs keep the input filename or get the `_c2pa` marker is set per sink in the service config (`output_sinks.local.naming`), not in the request.
+
+```bash
+curl -X POST http://localhost:8080/v2/sync/c2pa/video \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      { "type": "local_file_path", "path": "./tests/fixtures/video/mp4/video1.mp4" }
+    ],
+    "params": {},
+    "output": {
+      "type": "local",
+      "name": "spring-campaign"
     }
   }'
 ```
@@ -340,7 +346,7 @@ Expected status: `501 Not Implemented`
     {
       "input_index": 0,
       "status": "succeeded",
-      "output_path": "./.artifacts/output/batch-1/signed-video.mp4"
+      "output_path": "./.artifacts/output/signed-videos/video1_c2pa.mp4"
     }
   ],
   "timing": {
@@ -369,8 +375,8 @@ Expected status: `501 Not Implemented`
 
 - Async responses do not include a `status_url`; poll `GET /v2/jobs/{id}`.
 - Sync endpoints return `408` if the job does not finish before `server.sync_timeout_ms`.
-- Omitting `output` uses the configured local sink.
-- There is no `local_path` request output type.
+- Omitting `output` is equivalent to `{"type": "local"}` with no fields.
+- The `output` section carries the destination and placement (`type`, `bucket`, `prefix`, `name`), not `params`. The file-leaf naming mode is set per output sink in the service config (`output_sinks.*.naming`), not per request. Each input's leaf is derived from the input: files become `{stem}_c2pa.{ext}` (or the plain filename when the sink is configured `in_place`); folders/publications use the input folder name. See [Output Selection](reference.md#output-selection).
 
 ## See Also
 

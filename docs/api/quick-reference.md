@@ -67,25 +67,23 @@ Processor rules:
 
 ## Output Selection
 
-If `output` is omitted or `null`, artifacts are written under the configured local sink rooted at `output_sinks.local.base_dir`.
-
-With the `s3` feature enabled and `[output_sinks.s3]` configured, requests may select an S3 destination:
+The `output` section chooses the destination and placement. Omitting it (or `null`) is equivalent to `{"type": "local"}` with no fields. Two variants:
 
 ```json
-{
-  "output": {
-    "type": "s3",
-    "bucket": "processed-media",
-    "prefix": "exports/c2pa"
-  }
-}
+{ "output": { "type": "local", "prefix": "exports", "name": "spring-campaign" } }
 ```
 
-Notes:
+```json
+{ "output": { "type": "s3", "bucket": "processed-media", "prefix": "exports/c2pa", "name": "spring-campaign" } }
+```
 
-- There is no request `local_path` output type.
-- Only buckets listed in `output_sinks.s3.buckets` are accepted.
-- `prefix: "/"` writes at the configured `base_prefix` root when one is set.
+Fields:
+
+- `prefix` (optional): caller namespace under the sink root; `"/"` or omitted means none.
+- `name` (optional): logical output folder/base for the request.
+- `s3` additionally requires `bucket` (must be in `output_sinks.s3.buckets`; needs the `s3` build feature).
+
+Keys/paths are composed as `base_prefix(config) / prefix / name / <per-input-leaf>`, with no job/batch id. The per-input leaf is derived from the input: files → `{stem}_c2pa.{ext}` (or the plain filename when the sink is configured `in_place`); folders/publications → the input folder name. The file-leaf naming mode is set per output sink in the service config (`output_sinks.*.naming`), not in the request. Reusing a destination overwrites it. `local` writes to the service host's disk; `s3` is the primary hosted destination.
 
 ## Request Shape
 
@@ -113,10 +111,8 @@ Notes:
 ```json
 {
   "params": {
-    "output_name": "signed-video.mp4",
     "options": {
-      "timeout_ms": 2500,
-      "in_place": false
+      "timeout_ms": 2500
     },
     "assertions": [
       { "label": "com.example.rights", "data": { "owner": "ACME Media" } }
@@ -129,6 +125,8 @@ Notes:
 }
 ```
 
+Output name/destination for video (and every endpoint) is set in the `output` section, not `params` (see [Output Selection](#output-selection)).
+
 `assertions`, `parent`, and `parent_overrides` are accepted by all three C2PA endpoints (`/v2/c2pa/video`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) and can be combined in one request. They do not apply to the packaging-only `/v2/package` endpoint. See [Custom Assertions](reference.md#custom-assertions) and [Parent Provenance](reference.md#parent-provenance).
 
 ### C2PA Fragmented
@@ -136,7 +134,6 @@ Notes:
 ```json
 {
   "params": {
-    "publication_name": "demo-publication",
     "playlist_pattern": "**/*.m3u8",
     "init_pattern": "**/init*.mp4",
     "frag_pattern": "seg*.m4s",
@@ -155,9 +152,7 @@ Notes:
 
 ```json
 {
-  "params": {
-    "output_name": "publication"
-  }
+  "params": {}
 }
 ```
 
@@ -166,7 +161,6 @@ Notes:
 ```json
 {
   "params": {
-    "output_name": "publication",
     "playlist_pattern": "**/*.m3u8",
     "init_pattern": "**/init*.mp4",
     "frag_pattern": "seg*.m4s",
@@ -199,7 +193,7 @@ Notes:
     {
       "input_index": 0,
       "status": "succeeded",
-      "output_path": "./.artifacts/output/batch-1/signed-video.mp4"
+      "output_path": "./.artifacts/output/video_c2pa.mp4"
     }
   ],
   "timing": {

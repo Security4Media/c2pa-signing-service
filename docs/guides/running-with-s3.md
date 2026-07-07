@@ -46,16 +46,19 @@ curl -X POST http://localhost:8080/v2/c2pa/video \
         "filename_hint": "video.mp4"
       }
     ],
-    "params": {
-      "output_name": "signed-video.mp4"
-    },
+    "params": {},
     "output": {
       "type": "s3",
       "bucket": "processed-media",
-      "prefix": "exports/c2pa"
+      "prefix": "exports/c2pa",
+      "name": "spring-campaign"
     }
   }'
 ```
+
+The object key is `base_prefix / output.prefix / output.name / <per-input-leaf>`, e.g.
+`exports/exports/c2pa/spring-campaign/video_c2pa.mp4`. There is no job/batch id in the
+key, and reusing the same destination overwrites it.
 
 ## Common Failures
 

@@ -29,13 +29,11 @@ This page is the canonical human-written contract for the current `service-http`
   - `remote_file_url`
 - Request fields:
   - `inputs`: required, one or more file inputs
-  - `params.output_name`: optional
   - `params.options.timeout_ms`: optional
-  - `params.options.in_place`: optional
   - `params.assertions`: optional custom assertions (see [Custom Assertions](#custom-assertions))
   - `params.parent`: optional parent provenance (see [Parent Provenance](#parent-provenance))
   - `params.parent_overrides`: optional per-input parent overrides
-  - `output`: optional; omitted means configured local sink
+  - `output`: optional destination and placement (see [Output Selection](#output-selection)); omitted means the configured local sink
   - `options.max_files_parallel`: optional
 - Success: `200 OK` with `job_id` and `status = "queued"`
 - Errors:
@@ -60,7 +58,6 @@ This page is the canonical human-written contract for the current `service-http`
   - `local_folder_path`
   - `remote_folder_url`
 - Required params:
-  - `publication_name`
   - `playlist_pattern`
   - `init_pattern`
   - `frag_pattern`
@@ -68,6 +65,8 @@ This page is the canonical human-written contract for the current `service-http`
   - `assertions`: custom assertions (see [Custom Assertions](#custom-assertions))
   - `parent`: parent provenance (see [Parent Provenance](#parent-provenance))
   - `parent_overrides`: per-input parent overrides
+- Optional fields:
+  - `output`: optional destination and placement (see [Output Selection](#output-selection))
 - Success: `200 OK` with queued job response
 - Errors:
   - `400 INVALID_INPUT_TYPE` for file inputs
@@ -90,8 +89,9 @@ This page is the canonical human-written contract for the current `service-http`
 - Accepted inputs: folder inputs only
   - `local_folder_path`
   - `remote_folder_url`
-- Required params:
-  - `output_name`
+- Params: none required (`params` may be omitted or `{}`)
+- Optional fields:
+  - `output`: optional destination and placement (see [Output Selection](#output-selection))
 - Success: `200 OK` with queued job response
 - Errors:
   - `400 INVALID_INPUT_TYPE`
@@ -114,8 +114,6 @@ This page is the canonical human-written contract for the current `service-http`
 - Accepted inputs: folder inputs only
   - `local_folder_path`
   - `remote_folder_url`
-- Required params:
-  - `output_name`
 - Optional params:
   - `playlist_pattern`
   - `init_pattern`
@@ -123,6 +121,8 @@ This page is the canonical human-written contract for the current `service-http`
   - `assertions`: custom assertions (see [Custom Assertions](#custom-assertions))
   - `parent`: parent provenance (see [Parent Provenance](#parent-provenance))
   - `parent_overrides`: per-input parent overrides
+- Optional fields:
+  - `output`: optional destination and placement (see [Output Selection](#output-selection))
 - Success: `200 OK` with queued job response
 - Errors:
   - `400 INVALID_INPUT_TYPE`
@@ -193,9 +193,38 @@ Per-input overrides replace or disable the parent for specific inputs; `parent: 
 
 ## Output Selection
 
-- If `output` is omitted or `null`, artifacts go to the configured local sink rooted at `output_sinks.local.base_dir`.
-- `output.type = "s3"` is available only when the service is built with `--features s3` and the requested bucket is present in `output_sinks.s3.buckets`.
-- There is no supported request output type named `local_path`.
+The `output` section chooses the destination and placement. It applies to every signing and packaging endpoint. Omitting `output` (or sending `null`) is equivalent to `{"type": "local"}` with no fields.
+
+Two variants are selected by `type`:
+
+- `local` — writes to the service host's filesystem under `output_sinks.local.base_dir`. Useful for local or self-hosted deployments (the files land on the machine running the service).
+- `s3` — writes to object storage. This is the primary destination for hosted use. Available only when the service is built with `--features s3`, and the requested `bucket` must be present in `output_sinks.s3.buckets`.
+
+Common fields (both variants):
+
+- `prefix`: optional caller namespace under the sink root. `"/"` or omitted means "no request prefix".
+- `name`: optional logical output folder/base for this request.
+
+`s3` also requires `bucket`. `local` takes no extra fields. The file-leaf naming
+convention is **not** a request field; it is configured per output sink in the
+service config (`output_sinks.*.naming`, see [Request Output Types](../guides/configuration.md#request-output-types)).
+
+### Naming and paths
+
+Each input contributes its own leaf name, derived from the input reference. The
+per-sink `naming` setting (`derived` default | `in_place`) controls single-file
+outputs:
+
+- Single-file (video) inputs: `derived` produces `{stem}_c2pa.{ext}` (e.g. `clip.mp4` → `clip_c2pa.mp4`); `in_place` keeps the input filename (`clip.mp4`).
+- Folder / publication inputs (fragmented, package, package-and-sign): the leaf is the input folder's name; the `naming` setting does not apply.
+
+The final location is composed as:
+
+```
+<base_prefix (config)> / <output.prefix> / <output.name> / <per-input-leaf>
+```
+
+For `local`, `base_prefix` is `output_sinks.local.base_dir`; for `s3` it is `output_sinks.s3.base_prefix` (may be empty). There is no job or batch id segment in the path. Reusing the same destination overwrites it — callers own uniqueness (differentiate via `prefix` or `name`).
 
 ## Feature-Gated Behavior
 

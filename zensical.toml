@@ -37,6 +37,7 @@ nav = [
 variant = "modern"
 language = "en"
 logo = "images/brand/logo-cr.svg"
+favicon = "images/brand/logo-cr.svg"
 features = [
   "navigation.sections",
   "navigation.indexes",

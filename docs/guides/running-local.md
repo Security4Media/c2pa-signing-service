@@ -38,16 +38,19 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
         "path": "./tests/fixtures/video/mp4/video1.mp4"
       }
     ],
-    "params": {
-      "output_name": "signed-video.mp4"
+    "params": {},
+    "output": {
+      "type": "local",
+      "name": "signed-videos"
     }
   }'
 ```
 
 ## Outputs
 
-- Outputs are written under `output_sinks.local.base_dir`
-- The checked-in default is `./.artifacts/output`
+- Outputs are written under `output_sinks.local.base_dir`, composed as `base_dir / output.prefix / output.name / <per-input-leaf>` (here `./.artifacts/output/signed-videos/video1_c2pa.mp4`)
+- The checked-in default `base_dir` is `./.artifacts/output`
+- Omit `output` to write directly under `base_dir`; to keep the input filename instead of the `_c2pa` suffix, set `output_sinks.local.naming = "in_place"` in the service config (it is not a request field)
 
 ## Related Docs
 
