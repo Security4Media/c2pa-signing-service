@@ -15,7 +15,6 @@ nav = [
   {"API Docs Mode" = "guides/api-docs-mode.md"},
   {"Configuration" = "guides/configuration.md"},
   {"Troubleshooting" = "guides/troubleshooting.md"},
-  {"API Quick Reference" = "api/quick-reference.md"},
   {"API Reference" = "api/reference.md"},
   {"API cURL Examples" = "api/curl-examples.md"},
   {"Roadmap" = [

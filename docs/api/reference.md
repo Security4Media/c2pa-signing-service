@@ -1,141 +1,40 @@
 # API Reference
 
-This page is the canonical human-written contract for the current `service-http` v2 API. Use it for behavior, wire shape, and feature-gated capability notes. Use [API cURL Examples](curl-examples.md) for runnable requests and [openapi.json](openapi.json) for the generated machine-readable specification synchronized from the private service implementation.
+This page covers behavior the OpenAPI spec doesn't capture: sync/async pairing, per-endpoint input constraints, custom assertions, parent provenance, and output placement. [openapi.json](openapi.json) is the source of truth for exact request/response schemas, field types, and status/error codes. It's generated from the private service implementation and never edited by hand here; browse it via the Swagger Editor link on the [docs homepage](../README.md). Use [cURL Examples](curl-examples.md) for runnable requests.
 
 ## Health And Jobs
 
 ### `GET /v2/health`
 
-- Purpose: liveness and readiness probe for the HTTP service
-- Success: `200 OK`
-- Body: empty
+Liveness and readiness probe. Returns `200 OK` with an empty body.
 
 ### `GET /v2/jobs/{id}`
 
-- Purpose: retrieve the current snapshot of an asynchronous or synchronous batch job
-- Success: `200 OK` with `job_id`, top-level `status`, `results`, and `timing`
-- Errors:
-  - `404 JOB_NOT_FOUND` when the batch ID does not exist
-  - `500 PROCESSING_FAILED` or `500 INTERNAL_ERROR` for unexpected service-side failures
+Retrieves the current snapshot of a batch job, async or sync: `job_id`, top-level `status`, `results`, and `timing`. `404 JOB_NOT_FOUND` if the ID doesn't exist.
 
 ## C2PA Video
 
-### `POST /v2/c2pa/video`
+`POST /v2/c2pa/video` (async) and `POST /v2/sync/c2pa/video` (sync — polls until the job reaches a terminal state or `server.sync_timeout_ms` elapses, then `408 REQUEST_TIMEOUT`).
 
-- Purpose: submit monolithic video signing as an asynchronous job
-- Accepted inputs: file inputs only
-  - `in_request`
-  - `local_file_path`
-  - `remote_file_url`
-- Request fields:
-  - `inputs`: required, one or more file inputs
-  - `params.options.timeout_ms`: optional
-  - `params.assertions`: optional custom assertions (see [Custom Assertions](#custom-assertions))
-  - `params.parent`: optional parent provenance (see [Parent Provenance](#parent-provenance))
-  - `params.parent_overrides`: optional per-input parent overrides
-  - `output`: optional destination and placement (see [Output Selection](#output-selection)); omitted means the configured local sink
-  - `options.max_files_parallel`: optional
-- Success: `200 OK` with `job_id` and `status = "queued"`
-- Errors:
-  - `400 INVALID_INPUT_TYPE` for folder-style inputs
-  - `400 VALIDATION_FAILED` for malformed or disallowed payloads
-  - `500 PROCESSING_FAILED` or `500 INTERNAL_ERROR`
-
-### `POST /v2/sync/c2pa/video`
-
-- Purpose: submit monolithic video signing and poll until completion
-- Accepted inputs: same as async endpoint
-- Success: `200 OK` with final `JobResultResponse`
-- Timeout: `408 REQUEST_TIMEOUT` when the job does not finish within `server.sync_timeout_ms`
-- Errors: same validation and server-side failure model as the async endpoint
+Accepts file inputs only; a folder input returns `400 INVALID_INPUT_TYPE`. Supports [custom assertions](#custom-assertions) and [parent provenance](#parent-provenance).
 
 ## C2PA Fragmented
 
-### `POST /v2/c2pa/fragmented`
+`POST /v2/c2pa/fragmented` (async) and `POST /v2/sync/c2pa/fragmented` (sync, same timeout behavior as above).
 
-- Purpose: submit fragmented/HLS signing as an asynchronous job
-- Accepted inputs: folder inputs only
-  - `local_folder_path`
-  - `remote_folder_url`
-- Required params:
-  - `playlist_pattern`
-  - `init_pattern`
-  - `frag_pattern`
-- Optional params:
-  - `assertions`: custom assertions (see [Custom Assertions](#custom-assertions))
-  - `parent`: parent provenance (see [Parent Provenance](#parent-provenance))
-  - `parent_overrides`: per-input parent overrides
-- Optional fields:
-  - `output`: optional destination and placement (see [Output Selection](#output-selection))
-- Success: `200 OK` with queued job response
-- Errors:
-  - `400 INVALID_INPUT_TYPE` for file inputs
-  - `400 VALIDATION_FAILED`
-  - `500 PROCESSING_FAILED` or `500 INTERNAL_ERROR`
-
-### `POST /v2/sync/c2pa/fragmented`
-
-- Purpose: submit fragmented/HLS signing and wait for completion
-- Accepted inputs: same as async endpoint
-- Success: `200 OK` with final `JobResultResponse`
-- Timeout: `408 REQUEST_TIMEOUT`
-- Errors: same validation and server-side failure model as the async endpoint
+Accepts folder inputs only. `playlist_pattern`, `init_pattern`, and `frag_pattern` are required. Supports custom assertions and parent provenance, embedded into every signed init segment's manifest.
 
 ## Media Packaging
 
-### `POST /v2/package`
+`POST /v2/package` (async) and `POST /v2/sync/package` (sync, same timeout behavior as above).
 
-- Purpose: submit packaging-only processing as an asynchronous job
-- Accepted inputs: folder inputs only
-  - `local_folder_path`
-  - `remote_folder_url`
-- Params: none required (`params` may be omitted or `{}`)
-- Optional fields:
-  - `output`: optional destination and placement (see [Output Selection](#output-selection))
-- Success: `200 OK` with queued job response
-- Errors:
-  - `400 INVALID_INPUT_TYPE`
-  - `400 VALIDATION_FAILED`
-  - `500 PROCESSING_FAILED` or `500 INTERNAL_ERROR`
-
-### `POST /v2/sync/package`
-
-- Purpose: package media and wait for terminal job state
-- Accepted inputs: same as async endpoint
-- Success: `200 OK` with final `JobResultResponse`
-- Timeout: `408 REQUEST_TIMEOUT`
-- Errors: same validation and server-side failure model as the async endpoint
+Accepts folder inputs only; no required params. Packaging-only — no signing, so custom assertions and parent provenance don't apply.
 
 ## Package And Sign
 
-### `POST /v2/c2pa/package`
+`POST /v2/c2pa/package` (async) and `POST /v2/sync/c2pa/package` (sync, same timeout behavior as above).
 
-- Purpose: package media and apply C2PA signing in one asynchronous job
-- Accepted inputs: folder inputs only
-  - `local_folder_path`
-  - `remote_folder_url`
-- Optional params:
-  - `playlist_pattern`
-  - `init_pattern`
-  - `frag_pattern`
-  - `assertions`: custom assertions (see [Custom Assertions](#custom-assertions))
-  - `parent`: parent provenance (see [Parent Provenance](#parent-provenance))
-  - `parent_overrides`: per-input parent overrides
-- Optional fields:
-  - `output`: optional destination and placement (see [Output Selection](#output-selection))
-- Success: `200 OK` with queued job response
-- Errors:
-  - `400 INVALID_INPUT_TYPE`
-  - `400 VALIDATION_FAILED`
-  - `500 PROCESSING_FAILED` or `500 INTERNAL_ERROR`
-
-### `POST /v2/sync/c2pa/package`
-
-- Purpose: package and sign while waiting for completion
-- Accepted inputs: same as async endpoint
-- Success: `200 OK` with final `JobResultResponse`
-- Timeout: `408 REQUEST_TIMEOUT`
-- Errors: same validation and server-side failure model as the async endpoint
+Accepts folder inputs only. `playlist_pattern`, `init_pattern`, and `frag_pattern` are optional. Supports custom assertions and parent provenance, same as fragmented signing.
 
 ## Custom Assertions
 
@@ -260,11 +159,11 @@ For `local`, `base_prefix` is `output_sinks.local.base_dir`; for `s3` it is `out
 
 ## Error Model
 
-| Code | HTTP Status | Meaning |
-|------|-------------|---------|
-| `INVALID_INPUT_TYPE` | 400 | Processor received a mismatched input category |
-| `VALIDATION_FAILED` | 400 | Request fields or selected output failed validation |
-| `JOB_NOT_FOUND` | 404 | The requested batch ID does not exist |
-| `REQUEST_TIMEOUT` | 408 | Sync polling exceeded `server.sync_timeout_ms` |
-| `PROCESSING_FAILED` | 500 | Job execution failed while resolving, processing, or writing outputs |
-| `INTERNAL_ERROR` | 500 | Unexpected internal service failure |
+Errors share one shape (`ApiErrorResponse`: `error.code`, `error.message`, optional `error.details`). The OpenAPI spec lists every error code per endpoint with example payloads. `JOB_NOT_FOUND` and `REQUEST_TIMEOUT` map directly to the job-polling behavior described above.
+
+## Operational Notes
+
+- All processing endpoints accept batched requests via `inputs`, but the array must contain at least one input.
+- Sync endpoints poll until the job reaches a terminal state or `server.sync_timeout_ms` is exceeded.
+- Partial job completion is surfaced as `status: "failed"` in the HTTP response model.
+- Request body size is capped by `server.max_upload_bytes`.

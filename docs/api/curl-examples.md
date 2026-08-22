@@ -242,26 +242,6 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/package \
   }'
 ```
 
-## In-Request File Payload
-
-The request model also supports base64-embedded file inputs:
-
-```bash
-curl -X POST http://localhost:8080/v2/sync/c2pa/video \
-  -H "Content-Type: application/json" \
-  -d '{
-    "inputs": [
-      {
-        "type": "in_request",
-        "media_type": "video/mp4",
-        "data_base64": "AA==",
-        "filename": "clip.mp4"
-      }
-    ],
-    "params": {}
-  }'
-```
-
 ## Request-Selected S3 Output
 
 Available only when the service is built with `--features s3` and the target bucket is configured in `output_sinks.s3.buckets`. Naming lives in the `output` section; the object key is `base_prefix / prefix / name / <per-input-leaf>` (here `.../exports/c2pa/spring-campaign/video_c2pa.mp4`).
@@ -381,5 +361,4 @@ Expected status: `501 Not Implemented`
 ## See Also
 
 - [API Reference](reference.md)
-- [Quick Reference](quick-reference.md)
 - [Configuration Guide](../guides/configuration.md)
