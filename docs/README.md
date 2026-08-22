@@ -95,11 +95,6 @@ hide:
     <p class="brand-card__title">API Reference</p>
     <p class="brand-card__copy">Route purpose, accepted inputs, sync versus async behavior, and current status codes.</p>
   </a>
-  <a class="brand-card" href="api/quick-reference/">
-    <p class="brand-card__eyebrow">Fast Scan</p>
-    <p class="brand-card__title">Quick Reference</p>
-    <p class="brand-card__copy">A compact map of endpoints and request categories when you already know the service.</p>
-  </a>
   <a class="brand-card" href="api/curl-examples/">
     <p class="brand-card__eyebrow">Execution</p>
     <p class="brand-card__title">cURL Examples</p>

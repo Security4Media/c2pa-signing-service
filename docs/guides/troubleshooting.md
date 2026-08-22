@@ -13,13 +13,12 @@
 
 ## Sync Requests Time Out
 
-- increase `SERVICE__SERVER__SYNC_TIMEOUT_MS`
-- use async submission and poll `GET /v2/jobs/{id}`
+- increase `sync_timeout_ms` in the `[server]` section of `config/service.toml`
+- or use async submission and poll `GET /v2/jobs/{id}`
 
 ## Request Body Too Large
 
-- increase `SERVICE__SERVER__MAX_UPLOAD_BYTES`
-- this matters especially for `in_request` payloads
+- increase `max_upload_bytes` in the `[server]` section of `config/service.toml`
 
 ## S3 Config Causes Startup Failure
 

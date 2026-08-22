@@ -3,7 +3,7 @@
   "info": {
     "title": "C2PA Signing Service HTTP API",
     "description": "HTTP API for signing, packaging, and querying C2PA processing jobs.",
-    "version": "0.1.0"
+    "version": "0.1.10"
   },
   "paths": {
     "/v2/c2pa/fragmented": {
@@ -1052,34 +1052,6 @@
           {
             "type": "object",
             "required": [
-              "media_type",
-              "data_base64",
-              "type"
-            ],
-            "properties": {
-              "data_base64": {
-                "type": "string"
-              },
-              "filename": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "media_type": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "in_request"
-                ]
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
               "path",
               "type"
             ],
@@ -1156,14 +1128,28 @@
             }
           }
         ],
+        "description": "Where to read an input file or folder from.\n\n`RemoteFileUrl`/`RemoteFolderUrl` cover both HTTP(S) and S3 sources: the\nscheme of `url` (`https://` vs `s3://`) selects the resolver at request\ntime, there is no separate variant per provider. HTTP has no request-level\nauth mechanism; use a presigned URL to grant scoped, temporary access. S3\naccess (credentials, allowed buckets) is configured server-side and never\nappears in the request body.\n\nNote: an in-request (multipart) upload variant is intentionally not\ndocumented here yet, since no `/v2` endpoint can currently accept one.",
         "examples": [
           {
             "type": "local_file_path",
             "path": "./fixtures/input/local-video.mp4"
           },
           {
+            "type": "local_folder_path",
+            "path": "./fixtures/input/publication"
+          },
+          {
             "type": "remote_file_url",
             "url": "https://media.example.com/input/video.mp4",
+            "filename_hint": "video.mp4"
+          },
+          {
+            "type": "remote_folder_url",
+            "url": "https://media.example.com/input/publication/"
+          },
+          {
+            "type": "remote_file_url",
+            "url": "s3://media-bucket/input/video.mp4",
             "filename_hint": "video.mp4"
           },
           {
@@ -1231,8 +1217,12 @@
             }
           }
         ],
-        "description": "Output specification for API requests.\n\nThe `output` section selects the destination and placement: `prefix` is an\noptional caller namespace and `name` an optional logical output folder/base;\neach input contributes its own leaf. The file-leaf naming convention is\nconfigured per output sink in the service config, not per request. Omitting\n`output` is equivalent to `local` with no fields.",
+        "description": "Output specification for API requests.\n\nThe `output` section selects the destination and placement: `prefix` is an\noptional caller namespace and `name` an optional logical output folder/base;\neach input contributes its own leaf. The file-leaf naming convention is\nconfigured per output sink in the service config, not per request. Omitting\n`output` is equivalent to `local` with no fields.\n\nThis is pure request data and is always available; whether an `s3` destination\ncan actually be served is a deployment concern (the `s3` build feature and the\nconfigured bucket allow-list), resolved by the output sink factory and rejected\nby request validation when unavailable.",
         "examples": [
+          {
+            "type": "local",
+            "name": "exports"
+          },
           {
             "type": "s3",
             "bucket": "processed-media",
@@ -1443,36 +1433,58 @@
             "$ref": "#/components/schemas/C2paFragmentedParams"
           }
         },
-        "example": {
-          "inputs": [
-            {
-              "type": "local_folder_path",
-              "path": "./fixtures/input/publication"
+        "examples": [
+          {
+            "inputs": [
+              {
+                "type": "local_folder_path",
+                "path": "./fixtures/input/publication"
+              },
+              {
+                "type": "remote_folder_url",
+                "url": "https://media.example.com/input/publication/"
+              },
+              {
+                "type": "remote_folder_url",
+                "url": "s3://media-bucket/input/publication/"
+              }
+            ],
+            "params": {
+              "playlist_pattern": "**/*.m3u8",
+              "init_pattern": "**/init*.mp4",
+              "frag_pattern": "seg*.m4s"
             },
-            {
-              "type": "remote_folder_url",
-              "url": "https://media.example.com/input/publication/"
+            "options": {
+              "max_files_parallel": 2
             },
-            {
-              "type": "remote_folder_url",
-              "url": "s3://media-bucket/input/publication/"
+            "output": {
+              "type": "s3",
+              "bucket": "processed-media",
+              "prefix": "exports/c2pa",
+              "name": "demo-publication"
             }
-          ],
-          "params": {
-            "playlist_pattern": "**/*.m3u8",
-            "init_pattern": "**/init*.mp4",
-            "frag_pattern": "seg*.m4s"
           },
-          "options": {
-            "max_files_parallel": 2
-          },
-          "output": {
-            "type": "s3",
-            "bucket": "processed-media",
-            "prefix": "exports/c2pa",
-            "name": "demo-publication"
+          {
+            "inputs": [
+              {
+                "type": "local_folder_path",
+                "path": "./fixtures/input/publication"
+              }
+            ],
+            "params": {
+              "playlist_pattern": "**/*.m3u8",
+              "init_pattern": "**/init*.mp4",
+              "frag_pattern": "seg*.m4s"
+            },
+            "options": {
+              "max_files_parallel": 2
+            },
+            "output": {
+              "type": "local",
+              "name": "exports"
+            }
           }
-        }
+        ]
       },
       "C2paPackageParams": {
         "type": "object",
@@ -1566,36 +1578,58 @@
             "$ref": "#/components/schemas/C2paPackageParams"
           }
         },
-        "example": {
-          "inputs": [
-            {
-              "type": "local_folder_path",
-              "path": "./fixtures/input/publication"
+        "examples": [
+          {
+            "inputs": [
+              {
+                "type": "local_folder_path",
+                "path": "./fixtures/input/publication"
+              },
+              {
+                "type": "remote_folder_url",
+                "url": "https://media.example.com/input/publication/"
+              },
+              {
+                "type": "remote_folder_url",
+                "url": "s3://media-bucket/input/publication/"
+              }
+            ],
+            "params": {
+              "playlist_pattern": "**/*.m3u8",
+              "init_pattern": "**/init*.mp4",
+              "frag_pattern": "seg*.m4s"
             },
-            {
-              "type": "remote_folder_url",
-              "url": "https://media.example.com/input/publication/"
+            "options": {
+              "max_files_parallel": 2
             },
-            {
-              "type": "remote_folder_url",
-              "url": "s3://media-bucket/input/publication/"
+            "output": {
+              "type": "s3",
+              "bucket": "processed-media",
+              "prefix": "exports/c2pa",
+              "name": "demo-publication"
             }
-          ],
-          "params": {
-            "playlist_pattern": "**/*.m3u8",
-            "init_pattern": "**/init*.mp4",
-            "frag_pattern": "seg*.m4s"
           },
-          "options": {
-            "max_files_parallel": 2
-          },
-          "output": {
-            "type": "s3",
-            "bucket": "processed-media",
-            "prefix": "exports/c2pa",
-            "name": "demo-publication"
+          {
+            "inputs": [
+              {
+                "type": "local_folder_path",
+                "path": "./fixtures/input/publication"
+              }
+            ],
+            "params": {
+              "playlist_pattern": "**/*.m3u8",
+              "init_pattern": "**/init*.mp4",
+              "frag_pattern": "seg*.m4s"
+            },
+            "options": {
+              "max_files_parallel": 2
+            },
+            "output": {
+              "type": "local",
+              "name": "exports"
+            }
           }
-        }
+        ]
       },
       "C2paVideoOptions": {
         "type": "object",
@@ -1687,38 +1721,60 @@
             "$ref": "#/components/schemas/C2paVideoParams"
           }
         },
-        "example": {
-          "inputs": [
-            {
-              "type": "local_file_path",
-              "path": "./fixtures/input/local-video.mp4"
+        "examples": [
+          {
+            "inputs": [
+              {
+                "type": "local_file_path",
+                "path": "./fixtures/input/local-video.mp4"
+              },
+              {
+                "type": "remote_file_url",
+                "url": "https://media.example.com/input/video.mp4",
+                "filename_hint": "video.mp4"
+              },
+              {
+                "type": "remote_file_url",
+                "url": "s3://media-bucket/input/video.mp4",
+                "filename_hint": "video.mp4"
+              }
+            ],
+            "params": {
+              "options": {
+                "timeout_ms": 2500
+              }
             },
-            {
-              "type": "remote_file_url",
-              "url": "https://media.example.com/input/video.mp4",
-              "filename_hint": "video.mp4"
-            },
-            {
-              "type": "remote_file_url",
-              "url": "s3://media-bucket/input/video.mp4",
-              "filename_hint": "video.mp4"
-            }
-          ],
-          "params": {
             "options": {
-              "timeout_ms": 2500
+              "max_files_parallel": 2
+            },
+            "output": {
+              "type": "s3",
+              "bucket": "processed-media",
+              "prefix": "exports/c2pa",
+              "name": "demo-publication"
             }
           },
-          "options": {
-            "max_files_parallel": 2
-          },
-          "output": {
-            "type": "s3",
-            "bucket": "processed-media",
-            "prefix": "exports/c2pa",
-            "name": "demo-publication"
+          {
+            "inputs": [
+              {
+                "type": "local_file_path",
+                "path": "./fixtures/input/local-video.mp4"
+              }
+            ],
+            "params": {
+              "options": {
+                "timeout_ms": 2500
+              }
+            },
+            "options": {
+              "max_files_parallel": 2
+            },
+            "output": {
+              "type": "local",
+              "name": "exports"
+            }
           }
-        }
+        ]
       },
       "JobResponse": {
         "type": "object",
@@ -1833,32 +1889,50 @@
             "$ref": "#/components/schemas/PackageParams"
           }
         },
-        "example": {
-          "inputs": [
-            {
-              "type": "local_folder_path",
-              "path": "./fixtures/input/publication"
+        "examples": [
+          {
+            "inputs": [
+              {
+                "type": "local_folder_path",
+                "path": "./fixtures/input/publication"
+              },
+              {
+                "type": "remote_folder_url",
+                "url": "https://media.example.com/input/publication/"
+              },
+              {
+                "type": "remote_folder_url",
+                "url": "s3://media-bucket/input/publication/"
+              }
+            ],
+            "params": {},
+            "options": {
+              "max_files_parallel": 2
             },
-            {
-              "type": "remote_folder_url",
-              "url": "https://media.example.com/input/publication/"
-            },
-            {
-              "type": "remote_folder_url",
-              "url": "s3://media-bucket/input/publication/"
+            "output": {
+              "type": "s3",
+              "bucket": "processed-media",
+              "prefix": "exports/c2pa",
+              "name": "demo-publication"
             }
-          ],
-          "params": {},
-          "options": {
-            "max_files_parallel": 2
           },
-          "output": {
-            "type": "s3",
-            "bucket": "processed-media",
-            "prefix": "exports/c2pa",
-            "name": "demo-publication"
+          {
+            "inputs": [
+              {
+                "type": "local_folder_path",
+                "path": "./fixtures/input/publication"
+              }
+            ],
+            "params": {},
+            "options": {
+              "max_files_parallel": 2
+            },
+            "output": {
+              "type": "local",
+              "name": "exports"
+            }
           }
-        }
+        ]
       },
       "ProcessingOptions": {
         "type": "object",
