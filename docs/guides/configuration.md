@@ -1,6 +1,6 @@
 # Configuration Guide
 
-This service uses a typed top-level configuration file plus environment overrides.
+This service uses a typed top-level TOML configuration file.
 
 ## Overview
 
@@ -111,49 +111,6 @@ These sections reference specialized processor configuration files instead of in
 - `processors.c2pa.sdk_settings_path`
 - `processors.media_packager.pipeline_config_path`
 
-## Environment Overrides
-
-Environment variables override `service.toml` values using the `SERVICE__...` prefix.
-
-Examples:
-
-```bash
-export SERVICE_CONFIG_PATH=config/service.prod.toml
-export SERVICE__SERVER__BIND_ADDR=0.0.0.0:9090
-export SERVICE__SERVER__SYNC_TIMEOUT_MS=90000
-export SERVICE__WORKER__QUEUE_CAPACITY=256
-export SERVICE__INPUT_RESOLVERS__S3__PROFILE=my-aws-profile
-export SERVICE__INPUT_RESOLVERS__S3__REGION=eu-central-1
-export SERVICE__INPUT_RESOLVERS__S3__BUCKETS=media-a,media-b
-export SERVICE__OUTPUT_SINKS__S3__REGION=eu-central-1
-export SERVICE__OUTPUT_SINKS__S3__BUCKETS=processed-media,archive-media
-export SERVICE__OUTPUT_SINKS__S3__BASE_PREFIX=exports
-```
-
-Use environment variables for:
-
-- environment-specific operational values
-- deployment overrides
-- secret references and cloud runtime integration
-
-Keep structured defaults in `service.toml`.
-
-## Container and Cloud Usage
-
-Recommended pattern:
-
-- mount `config/service.toml` from a ConfigMap or baked-in image config
-- mount processor-specific TOMLs separately if needed
-- use `SERVICE__...` for deployment-specific overrides
-- use the AWS default credential chain for S3 access instead of storing credentials in TOML
-
-This works well for:
-
-- Docker
-- Kubernetes
-- GitHub Actions
-- AWS-hosted deployments
-
 ## Feature Flags
 
 - `openapi`: exposes `/openapi.json`
@@ -173,7 +130,6 @@ The current request model is provider-agnostic:
 - `local_folder_path`
 - `remote_file_url`
 - `remote_folder_url`
-- `in_request`
 
 Examples:
 

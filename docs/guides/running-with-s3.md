@@ -14,24 +14,26 @@ If S3 config exists but the binary is built without `--features s3`, startup fai
 
 ## Configure S3 Inputs
 
-Enable `[input_resolvers.s3]` in `config/service.toml` or by environment override:
+Enable `[input_resolvers.s3]` in `config/service.toml`:
 
-```bash
-export SERVICE__INPUT_RESOLVERS__S3__REGION=eu-central-1
-export SERVICE__INPUT_RESOLVERS__S3__BUCKETS=media-bucket,publication-bucket
+```toml
+[input_resolvers.s3]
+region = "eu-central-1"
+buckets = ["media-bucket", "publication-bucket"]
 ```
 
 ## Configure S3 Outputs
 
-Add or override `output_sinks.s3`:
+Add `[output_sinks.s3]`:
 
-```bash
-export SERVICE__OUTPUT_SINKS__S3__REGION=eu-central-1
-export SERVICE__OUTPUT_SINKS__S3__BUCKETS=processed-media,archive-media
-export SERVICE__OUTPUT_SINKS__S3__BASE_PREFIX=exports
+```toml
+[output_sinks.s3]
+region = "eu-central-1"
+buckets = ["processed-media", "archive-media"]
+base_prefix = "exports"
 ```
 
-The requested `output.bucket` must be in the configured allow-list.
+The requested `output.bucket` must be in the configured allow-list. See the [Configuration Guide](configuration.md#output_sinkss3) for the full field reference.
 
 ## Example Request
 

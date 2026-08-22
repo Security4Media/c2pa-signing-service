@@ -36,14 +36,7 @@ The HTTP service loads `config/service.toml` by default. The checked-in default 
 - C2PA settings from `config/c2pa/default_c2pa_sdk_settings.toml`
 - media packager pipeline from `config/media-packager/media_packager_pipeline.toml`
 
-Useful overrides:
-
-```bash
-export RUST_LOG=info
-export SERVICE_CONFIG_PATH=config/service.toml
-export SERVICE__SERVER__BIND_ADDR=127.0.0.1:8080
-export SERVICE__SERVER__SYNC_TIMEOUT_MS=120000
-```
+To use a different config file, set `SERVICE_CONFIG_PATH`. To control log verbosity, set `RUST_LOG` (e.g. `RUST_LOG=info`).
 
 See the [Configuration Guide](configuration.md) for the full runtime model, including S3 and feature-gated behavior.
 
@@ -178,12 +171,16 @@ curl -X POST http://localhost:8080/v2/sync/package \
 
 ### S3
 
-Build with `--features s3` to enable:
+```bash
+cargo run -p service-http --features s3
+```
+
+Enables:
 
 - `s3://...` remote inputs through `remote_file_url` and `remote_folder_url`
 - request-selected S3 outputs through `output.type = "s3"`
 
-If S3 config is present in `config/service.toml` but the binary is built without the `s3` feature, startup fails.
+If S3 config is present in `config/service.toml` but the binary is built without the `s3` feature, startup fails. See [Running With S3](running-with-s3.md) for the full setup.
 
 ## Common Issues
 
@@ -199,17 +196,12 @@ Confirm the service is listening on the configured bind address:
 curl -i http://localhost:8080/v2/health
 ```
 
-### Sync Request Times Out
+### Sync Request Times Out Or Request Body Too Large
 
-Increase `SERVICE__SERVER__SYNC_TIMEOUT_MS` or use the async endpoint and poll `GET /v2/jobs/{id}`.
-
-### Request Body Too Large
-
-Increase `SERVICE__SERVER__MAX_UPLOAD_BYTES` if your JSON request, including `in_request` payloads, exceeds the default limit.
+See [Troubleshooting](troubleshooting.md) for the config fields to adjust.
 
 ## Next Steps
 
-- Read the [API Quick Reference](../api/quick-reference.md)
 - Read the [API Reference](../api/reference.md)
 - Use the [cURL Examples](../api/curl-examples.md)
 - Review the [Configuration Guide](configuration.md)
