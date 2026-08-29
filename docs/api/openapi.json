@@ -3,9 +3,103 @@
   "info": {
     "title": "C2PA Signing Service HTTP API",
     "description": "HTTP API for signing, packaging, and querying C2PA processing jobs.",
-    "version": "0.1.10"
+    "version": "0.1.11"
   },
   "paths": {
+    "/v2/c2pa/audio": {
+      "post": {
+        "tags": [
+          "c2pa-audio"
+        ],
+        "summary": "Handle async C2PA audio signing",
+        "operationId": "submitC2paAudioJob",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/C2paAudioRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Job accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "examples": {
+                  "invalid_input_type": {
+                    "summary": "Unsupported input type for this endpoint",
+                    "value": {
+                      "error": {
+                        "code": "INVALID_INPUT_TYPE",
+                        "message": "Invalid input type at index 1",
+                        "details": {
+                          "input_index": 1
+                        }
+                      }
+                    }
+                  },
+                  "validation_failed": {
+                    "summary": "Payload validation failed",
+                    "value": {
+                      "error": {
+                        "code": "VALIDATION_FAILED",
+                        "message": "Validation failed: inputs: length is lower than 1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "examples": {
+                  "internal_error": {
+                    "summary": "Unexpected internal error",
+                    "value": {
+                      "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "An internal error occurred. Please try again later."
+                      }
+                    }
+                  },
+                  "processing_failed": {
+                    "summary": "Processing failed",
+                    "value": {
+                      "error": {
+                        "code": "PROCESSING_FAILED",
+                        "message": "Processing failed. Please check your request and try again."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2/c2pa/fragmented": {
       "post": {
         "tags": [
@@ -436,6 +530,116 @@
                         "message": "Validation failed: inputs: length is lower than 1"
                       }
                     }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "examples": {
+                  "internal_error": {
+                    "summary": "Unexpected internal error",
+                    "value": {
+                      "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "An internal error occurred. Please try again later."
+                      }
+                    }
+                  },
+                  "processing_failed": {
+                    "summary": "Processing failed",
+                    "value": {
+                      "error": {
+                        "code": "PROCESSING_FAILED",
+                        "message": "Processing failed. Please check your request and try again."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/sync/c2pa/audio": {
+      "post": {
+        "tags": [
+          "c2pa-audio"
+        ],
+        "summary": "Handle sync C2PA audio signing",
+        "operationId": "runC2paAudioSync",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/C2paAudioRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Job completed within the synchronous timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "examples": {
+                  "invalid_input_type": {
+                    "summary": "Unsupported input type for this endpoint",
+                    "value": {
+                      "error": {
+                        "code": "INVALID_INPUT_TYPE",
+                        "message": "Invalid input type at index 1",
+                        "details": {
+                          "input_index": 1
+                        }
+                      }
+                    }
+                  },
+                  "validation_failed": {
+                    "summary": "Payload validation failed",
+                    "value": {
+                      "error": {
+                        "code": "VALIDATION_FAILED",
+                        "message": "Validation failed: inputs: length is lower than 1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "Synchronous wait timed out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "REQUEST_TIMEOUT",
+                    "message": "Request timed out waiting for job completion"
                   }
                 }
               }
@@ -1345,6 +1549,106 @@
           }
         }
       },
+      "C2paAudioParams": {
+        "type": "object",
+        "description": "Parameters for C2PA audio signing.",
+        "properties": {
+          "assertions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiAssertionDef"
+            },
+            "description": "Optional custom assertions to embed in the C2PA manifest."
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiParent",
+                "description": "Optional parent manifest to attach as a provenance ingredient."
+              }
+            ]
+          },
+          "parent_overrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiParentOverride"
+            },
+            "description": "Per-input overrides for the parent manifest."
+          }
+        },
+        "example": {}
+      },
+      "C2paAudioRequest": {
+        "type": "object",
+        "description": "Request for the C2PA audio signing endpoint.\n\nInputs must be single files whose extension names a container the C2PA SDK\ncan sign: `mp3`, `wav`, `flac`, `m4a`, and `mp4`/`m4v` for audio-only\nassets. An input with no derivable extension is accepted and its media type\nis settled during resolution.",
+        "required": [
+          "inputs"
+        ],
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiInputRef"
+            }
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ApiOutputSpec"
+              }
+            ]
+          },
+          "params": {
+            "$ref": "#/components/schemas/C2paAudioParams"
+          }
+        },
+        "examples": [
+          {
+            "inputs": [
+              {
+                "type": "local_file_path",
+                "path": "./fixtures/input/local-audio.mp3"
+              },
+              {
+                "type": "remote_file_url",
+                "url": "https://media.example.com/input/interview.wav",
+                "filename_hint": "interview.wav"
+              },
+              {
+                "type": "remote_file_url",
+                "url": "s3://media-bucket/input/programme.m4a",
+                "filename_hint": "programme.m4a"
+              }
+            ],
+            "params": {},
+            "output": {
+              "type": "s3",
+              "bucket": "processed-media",
+              "prefix": "exports/c2pa",
+              "name": "demo-publication"
+            }
+          },
+          {
+            "inputs": [
+              {
+                "type": "local_file_path",
+                "path": "./fixtures/input/local-audio.mp3"
+              }
+            ],
+            "params": {},
+            "output": {
+              "type": "local",
+              "name": "exports"
+            }
+          }
+        ]
+      },
       "C2paFragmentedParams": {
         "type": "object",
         "description": "Parameters for fragmented C2PA signing.",
@@ -1409,16 +1713,6 @@
               "$ref": "#/components/schemas/ApiInputRef"
             }
           },
-          "options": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ProcessingOptions"
-              }
-            ]
-          },
           "output": {
             "oneOf": [
               {
@@ -1454,9 +1748,6 @@
               "init_pattern": "**/init*.mp4",
               "frag_pattern": "seg*.m4s"
             },
-            "options": {
-              "max_files_parallel": 2
-            },
             "output": {
               "type": "s3",
               "bucket": "processed-media",
@@ -1475,9 +1766,6 @@
               "playlist_pattern": "**/*.m3u8",
               "init_pattern": "**/init*.mp4",
               "frag_pattern": "seg*.m4s"
-            },
-            "options": {
-              "max_files_parallel": 2
             },
             "output": {
               "type": "local",
@@ -1554,16 +1842,6 @@
               "$ref": "#/components/schemas/ApiInputRef"
             }
           },
-          "options": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ProcessingOptions"
-              }
-            ]
-          },
           "output": {
             "oneOf": [
               {
@@ -1599,9 +1877,6 @@
               "init_pattern": "**/init*.mp4",
               "frag_pattern": "seg*.m4s"
             },
-            "options": {
-              "max_files_parallel": 2
-            },
             "output": {
               "type": "s3",
               "bucket": "processed-media",
@@ -1621,29 +1896,12 @@
               "init_pattern": "**/init*.mp4",
               "frag_pattern": "seg*.m4s"
             },
-            "options": {
-              "max_files_parallel": 2
-            },
             "output": {
               "type": "local",
               "name": "exports"
             }
           }
         ]
-      },
-      "C2paVideoOptions": {
-        "type": "object",
-        "description": "C2PA video signing options.",
-        "properties": {
-          "timeout_ms": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "int64",
-            "minimum": 0
-          }
-        }
       },
       "C2paVideoParams": {
         "type": "object",
@@ -1655,9 +1913,6 @@
               "$ref": "#/components/schemas/ApiAssertionDef"
             },
             "description": "Optional custom assertions to embed in the C2PA manifest."
-          },
-          "options": {
-            "$ref": "#/components/schemas/C2paVideoOptions"
           },
           "parent": {
             "oneOf": [
@@ -1678,11 +1933,7 @@
             "description": "Per-input overrides for the parent manifest."
           }
         },
-        "example": {
-          "options": {
-            "timeout_ms": 2500
-          }
-        }
+        "example": {}
       },
       "C2paVideoRequest": {
         "type": "object",
@@ -1696,16 +1947,6 @@
             "items": {
               "$ref": "#/components/schemas/ApiInputRef"
             }
-          },
-          "options": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ProcessingOptions"
-              }
-            ]
           },
           "output": {
             "oneOf": [
@@ -1739,14 +1980,7 @@
                 "filename_hint": "video.mp4"
               }
             ],
-            "params": {
-              "options": {
-                "timeout_ms": 2500
-              }
-            },
-            "options": {
-              "max_files_parallel": 2
-            },
+            "params": {},
             "output": {
               "type": "s3",
               "bucket": "processed-media",
@@ -1761,14 +1995,7 @@
                 "path": "./fixtures/input/local-video.mp4"
               }
             ],
-            "params": {
-              "options": {
-                "timeout_ms": 2500
-              }
-            },
-            "options": {
-              "max_files_parallel": 2
-            },
+            "params": {},
             "output": {
               "type": "local",
               "name": "exports"
@@ -1865,16 +2092,6 @@
               "$ref": "#/components/schemas/ApiInputRef"
             }
           },
-          "options": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ProcessingOptions"
-              }
-            ]
-          },
           "output": {
             "oneOf": [
               {
@@ -1906,9 +2123,6 @@
               }
             ],
             "params": {},
-            "options": {
-              "max_files_parallel": 2
-            },
             "output": {
               "type": "s3",
               "bucket": "processed-media",
@@ -1924,32 +2138,12 @@
               }
             ],
             "params": {},
-            "options": {
-              "max_files_parallel": 2
-            },
             "output": {
               "type": "local",
               "name": "exports"
             }
           }
         ]
-      },
-      "ProcessingOptions": {
-        "type": "object",
-        "description": "Processing options common to all processors",
-        "properties": {
-          "max_files_parallel": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Maximum number of files to process in parallel",
-            "minimum": 0
-          }
-        },
-        "example": {
-          "max_files_parallel": 2
-        }
       },
       "ProcessingResult": {
         "type": "object",
@@ -1994,6 +2188,10 @@
     {
       "name": "c2pa-video",
       "description": "C2PA signing for monolithic video assets"
+    },
+    {
+      "name": "c2pa-audio",
+      "description": "C2PA signing for monolithic audio assets"
     },
     {
       "name": "c2pa-fragmented",
