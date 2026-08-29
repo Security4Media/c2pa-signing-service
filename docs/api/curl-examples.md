@@ -26,17 +26,10 @@ curl -X POST http://localhost:8080/v2/c2pa/video \
         "filename_hint": "video.mp4"
       }
     ],
-    "params": {
-      "options": {
-        "timeout_ms": 2500
-      }
-    },
+    "params": {},
     "output": {
       "type": "local",
       "name": "signed-videos"
-    },
-    "options": {
-      "max_files_parallel": 2
     }
   }'
 ```
