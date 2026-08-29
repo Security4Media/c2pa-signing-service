@@ -73,7 +73,68 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/video \
   }'
 ```
 
-Custom assertions and parent provenance work on all three C2PA endpoints (`/v2/c2pa/video`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) under `params.assertions`, `params.parent`, and `params.parent_overrides`, and can be combined in one request. The fragmented and package examples below show the same fields. See [Custom Assertions](reference.md#custom-assertions) and [Parent Provenance](reference.md#parent-provenance).
+Custom assertions and parent provenance work on all four C2PA endpoints (`/v2/c2pa/video`, `/v2/c2pa/audio`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) under `params.assertions`, `params.parent`, and `params.parent_overrides`, and can be combined in one request. The fragmented and package examples below show the same fields. See [Custom Assertions](reference.md#custom-assertions) and [Parent Provenance](reference.md#parent-provenance).
+
+## C2PA Audio Signing
+
+Single audio files only: `mp3`, `wav`, `flac`, `m4a`, and `mp4`/`m4v` for audio-only assets. The request shape matches video signing.
+
+### Async
+
+```bash
+curl -X POST http://localhost:8080/v2/c2pa/audio \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      {
+        "type": "remote_file_url",
+        "url": "https://example.com/interview.wav",
+        "filename_hint": "interview.wav"
+      }
+    ],
+    "params": {},
+    "output": {
+      "type": "local",
+      "name": "signed-audio"
+    }
+  }'
+```
+
+### Sync
+
+```bash
+curl -X POST http://localhost:8080/v2/sync/c2pa/audio \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      {
+        "type": "local_file_path",
+        "path": "./fixtures/input/local-audio.mp3"
+      }
+    ],
+    "params": {}
+  }'
+```
+
+### With Custom Assertions And Parent File
+
+`params.assertions`, `params.parent`, and `params.parent_overrides` behave exactly as in the video examples above.
+
+```bash
+curl -X POST http://localhost:8080/v2/sync/c2pa/audio \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      { "type": "local_file_path", "path": "./fixtures/input/local-audio.mp3" }
+    ],
+    "params": {
+      "assertions": [
+        { "label": "com.example.rights", "data": { "owner": "ACME Media", "license": "CC-BY-4.0" } }
+      ],
+      "parent": { "type": "reference", "reference": "urn:example:parent-asset" }
+    }
+  }'
+```
 
 ## C2PA Fragmented Signing
 
