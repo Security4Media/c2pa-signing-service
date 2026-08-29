@@ -109,7 +109,7 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/audio \
     "inputs": [
       {
         "type": "local_file_path",
-        "path": "./fixtures/input/local-audio.mp3"
+        "path": "./tests/fixtures/audio/mp3/tone.mp3"
       }
     ],
     "params": {}
@@ -125,7 +125,7 @@ curl -X POST http://localhost:8080/v2/sync/c2pa/audio \
   -H "Content-Type: application/json" \
   -d '{
     "inputs": [
-      { "type": "local_file_path", "path": "./fixtures/input/local-audio.mp3" }
+      { "type": "local_file_path", "path": "./tests/fixtures/audio/mp3/tone.mp3" }
     ],
     "params": {
       "assertions": [
