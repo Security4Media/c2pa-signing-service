@@ -64,4 +64,4 @@ When you browse the docs locally, the card opens the raw generated asset at `api
 ## Related Docs
 
 - [API Reference](../api/reference.md)
-- [Documentation Index](../README.md)
+- [Documentation Index](../index.md)

@@ -8,7 +8,7 @@ repo_url = "https://github.com/Security4Media/c2pa-signing-service"
 extra_css = ["stylesheets/brand.css", "stylesheets/home.css"]
 extra_javascript = ["javascripts/openapi-viewer-link.js"]
 nav = [
-  {"Home" = "README.md"},
+  {"Home" = "index.md"},
   {"Getting Started" = "guides/getting-started.md"},
   {"Running Local" = "guides/running-local.md"},
   {"Running With S3" = "guides/running-with-s3.md"},
@@ -28,15 +28,17 @@ nav = [
     {"Job Completion Webhooks" = "roadmap/job-completion-webhooks.md"},
     {"Expanded Resolvers And Sinks" = "roadmap/expanded-resolvers-and-sinks.md"},
     {"Persistent Job Storage" = "roadmap/persistent-job-storage.md"},
-    {"Live DASH Streaming" = "roadmap/live-dash-streaming.md"}
+    {"Live DASH Streaming" = "roadmap/live-dash-streaming.md"},
+    {"MXF Reference Implementation" = "roadmap/mxf-reference-implementation.md"}
   ]}
 ]
 
 [project.theme]
 variant = "modern"
 language = "en"
-logo = "images/brand/logo-cr.svg"
-favicon = "images/brand/logo-cr.svg"
+custom_dir = "overrides"
+logo = "images/brand/s4m-icon-header.png"
+favicon = "images/brand/favicon.svg"
 features = [
   "navigation.sections",
   "navigation.indexes",
@@ -47,16 +49,10 @@ features = [
 font.text = "Manrope"
 font.code = "IBM Plex Mono"
 
-[[project.theme.palette]]
-scheme = "default"
-primary = "custom"
-accent = "custom"
-toggle.icon = "lucide/moon"
-toggle.name = "Switch to dark mode"
-
-[[project.theme.palette]]
+# Dark mode only for now: a single palette entry with no `toggle` table
+# pins data-md-color-scheme to "slate" and renders no visible light/dark
+# switch (Zensical only draws the toggle button when `toggle` is set).
+[project.theme.palette]
 scheme = "slate"
 primary = "custom"
 accent = "custom"
-toggle.icon = "lucide/sun"
-toggle.name = "Switch to light mode"

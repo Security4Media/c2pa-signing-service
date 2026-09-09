@@ -1,6 +1,6 @@
 # API Reference
 
-This page covers behavior the OpenAPI spec doesn't capture: sync/async pairing, per-endpoint input constraints, custom assertions, parent provenance, and output placement. [openapi.json](openapi.json) is the source of truth for exact request/response schemas, field types, and status/error codes. It's generated from the private service implementation and never edited by hand here; browse it via the Swagger Editor link on the [docs homepage](../README.md). Use [cURL Examples](curl-examples.md) for runnable requests.
+This page covers behavior the OpenAPI spec doesn't capture: sync/async pairing, per-endpoint input constraints, custom assertions, parent provenance, and output placement. [openapi.json](openapi.json) is the source of truth for exact request/response schemas, field types, and status/error codes. It's generated from the private service implementation and never edited by hand here; browse it via the Swagger Editor link on the [docs homepage](../index.md). Use [cURL Examples](curl-examples.md) for runnable requests.
 
 ## Health And Jobs
 
@@ -17,6 +17,12 @@ Retrieves the current snapshot of a batch job, async or sync: `job_id`, top-leve
 `POST /v2/c2pa/video` (async) and `POST /v2/sync/c2pa/video` (sync — polls until the job reaches a terminal state or `server.sync_timeout_ms` elapses, then `408 REQUEST_TIMEOUT`).
 
 Accepts file inputs only; a folder input returns `400 INVALID_INPUT_TYPE`. Supports [custom assertions](#custom-assertions) and [parent provenance](#parent-provenance).
+
+## C2PA Audio
+
+`POST /v2/c2pa/audio` (async) and `POST /v2/sync/c2pa/audio` (sync, same timeout behavior as above).
+
+Accepts file inputs only; a folder input returns `400 INVALID_INPUT_TYPE`. Each input must be a single file whose extension names a container the C2PA SDK can sign: `mp3`, `wav`, `flac`, `m4a`, and `mp4`/`m4v` for audio-only assets. An input with no derivable extension is accepted and its media type is settled during resolution. Supports [custom assertions](#custom-assertions) and [parent provenance](#parent-provenance), with the same `params` shape as video signing.
 
 ## C2PA Fragmented
 
@@ -38,7 +44,7 @@ Accepts folder inputs only. `playlist_pattern`, `init_pattern`, and `frag_patter
 
 ## Custom Assertions
 
-All three C2PA signing endpoints (`/v2/c2pa/video`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) accept optional custom assertions embedded in the signed manifest via `params.assertions`. Each entry is a label plus a JSON payload:
+All four C2PA signing endpoints (`/v2/c2pa/video`, `/v2/c2pa/audio`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) accept optional custom assertions embedded in the signed manifest via `params.assertions`. Each entry is a label plus a JSON payload:
 
 ```json
 "assertions": [
@@ -56,7 +62,7 @@ For fragmented and packaged publications, the assertions are embedded into every
 
 ## Parent Provenance
 
-All three C2PA signing endpoints (`/v2/c2pa/video`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) accept an optional parent manifest attached as a provenance ingredient via `params.parent`, with optional per-input overrides via `params.parent_overrides`. Custom assertions and parent provenance can be combined in the same request on any of these endpoints.
+All four C2PA signing endpoints (`/v2/c2pa/video`, `/v2/c2pa/audio`, `/v2/c2pa/fragmented`, `/v2/c2pa/package`) accept an optional parent manifest attached as a provenance ingredient via `params.parent`, with optional per-input overrides via `params.parent_overrides`. Custom assertions and parent provenance can be combined in the same request on any of these endpoints.
 
 For fragmented and packaged publications, the supplied parent is attached to every signed init segment's manifest, marking the publication as derived from that parent. When no parent is supplied, signing still succeeds: the service treats the signed output as an edit of its own source segment by default.
 
@@ -114,7 +120,7 @@ Each input contributes its own leaf name, derived from the input reference. The
 per-sink `naming` setting (`derived` default | `in_place`) controls single-file
 outputs:
 
-- Single-file (video) inputs: `derived` produces `{stem}_c2pa.{ext}` (e.g. `clip.mp4` → `clip_c2pa.mp4`); `in_place` keeps the input filename (`clip.mp4`).
+- Single-file (video, audio) inputs: `derived` produces `{stem}_c2pa.{ext}` (e.g. `clip.mp4` → `clip_c2pa.mp4`); `in_place` keeps the input filename (`clip.mp4`).
 - Folder / publication inputs (fragmented, package, package-and-sign): the leaf is the input folder's name; the `naming` setting does not apply.
 
 The final location is composed as:

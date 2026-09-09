@@ -8,7 +8,7 @@ It is a public-facing view of the direction of the docs and service surface, not
 
 Today, the docs cover the current service surface, runtime configuration, local operation, S3-backed operation.
 
-The roadmap extends that foundation into ten areas where the current docs and public surface are intentionally incomplete:
+The roadmap extends that foundation into eleven areas where the current docs and public surface are intentionally incomplete:
 
 - [Softbinding Insertion](softbinding-insertion.md): move from placeholder watermark endpoints toward a documented softbinding insertion capability
 - [Softbinding Manifest Storage](softbinding-manifest-storage.md): describe how durable manifest storage could support lookup, retrieval, and operational workflows
@@ -20,6 +20,7 @@ The roadmap extends that foundation into ten areas where the current docs and pu
 - [Expanded Resolvers And Sinks](expanded-resolvers-and-sinks.md): describe broader cloud and database-oriented input and output integration paths
 - [Persistent Job Storage](persistent-job-storage.md): explain how durable SQLite/PostgreSQL-backed job state could replace in-memory-only lifecycle tracking
 - [Live DASH Streaming](live-dash-streaming.md): extend the packaging roadmap toward live DASH-oriented workflows beyond today’s batch processing model
+- [MXF Reference Implementation](mxf-reference-implementation.md): describes how the Security4Media authenticity group could contribute to a C2PA-in-MXF reference implementation for broadcast workflows
 
 ## How To Read This Section
 
