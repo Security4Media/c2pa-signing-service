@@ -1,6 +1,6 @@
 # API Reference
 
-This page covers behavior the OpenAPI spec doesn't capture: sync/async pairing, per-endpoint input constraints, custom assertions, parent provenance, and output placement. [openapi.json](openapi.json) is the source of truth for exact request/response schemas, field types, and status/error codes. It's generated from the private service implementation and never edited by hand here; browse it via the Swagger Editor link on the [docs homepage](../README.md). Use [cURL Examples](curl-examples.md) for runnable requests.
+This page covers behavior the OpenAPI spec doesn't capture: sync/async pairing, per-endpoint input constraints, custom assertions, parent provenance, and output placement. [openapi.json](openapi.json) is the source of truth for exact request/response schemas, field types, and status/error codes. It's generated from the private service implementation and never edited by hand here; browse it via the Swagger Editor link on the [docs homepage](../index.md). Use [cURL Examples](curl-examples.md) for runnable requests.
 
 ## Health And Jobs
 

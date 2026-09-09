@@ -30,9 +30,9 @@
 .md-typeset .brand-hero__layout {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 480px);
   gap: 3rem;
-  align-items: center;
+  align-items: start;
   width: 100%;
   max-width: 100%;
   z-index: 1;
@@ -40,7 +40,6 @@
 
 .md-typeset .brand-hero__copy {
   min-width: 0;
-  padding-top: 5.75rem;
 }
 
 .md-typeset .brand-hero__headline {
@@ -68,6 +67,29 @@
   line-height: 1.82;
 }
 
+.md-typeset .brand-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 1.9rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  background: var(--md-primary-fg-color);
+  color: var(--brand-white);
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 14px 32px rgba(225, 6, 0, 0.28);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.md-typeset .brand-hero__cta:hover,
+.md-typeset .brand-hero__cta:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(225, 6, 0, 0.36);
+  color: var(--brand-white);
+}
+
 .md-typeset .brand-hero__actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -84,21 +106,13 @@
 
 .md-typeset .brand-lockup {
   display: block;
-  max-width: min(100%, 420px);
+  max-width: 100%;
   box-sizing: border-box;
   padding: 1rem;
   border-radius: 26px;
   border: 1px solid var(--brand-border);
   background: var(--brand-lockup-bg);
   box-shadow: var(--brand-shadow);
-}
-
-.md-typeset .brand-lockup--light {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: clamp(180px, 20vw, 250px);
-  z-index: 2;
 }
 
 .md-typeset .brand-lockup img,
@@ -116,14 +130,6 @@
   border-radius: 24px;
   border: 1px solid var(--brand-border);
   background: linear-gradient(180deg, rgba(225, 6, 0, 0.08) 0%, rgba(225, 6, 0, 0.02) 100%);
-}
-
-.md-typeset .brand-lockup--dark {
-  display: none;
-}
-
-[data-md-color-scheme="slate"] .md-typeset .brand-lockup--dark {
-  display: block;
 }
 
 .md-typeset .brand-metrics {
@@ -170,20 +176,12 @@
     grid-template-columns: 1fr;
   }
 
-  .md-typeset .brand-hero__copy {
-    padding-top: 4.75rem;
-  }
-
   .md-typeset .brand-hero__visual {
     justify-items: end;
   }
 
   .md-typeset .brand-lockup {
-    max-width: 360px;
-  }
-
-  .md-typeset .brand-lockup--light {
-    width: clamp(160px, 32vw, 210px);
+    max-width: 480px;
   }
 
   .md-typeset .brand-mark {
@@ -195,15 +193,6 @@
   .md-typeset .brand-hero__headline {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .md-typeset .brand-hero__copy {
-    padding-top: 0;
-  }
-
-  .md-typeset .brand-lockup--light {
-    position: static;
-    width: min(100%, 320px);
   }
 
   .md-typeset .brand-hero__actions,

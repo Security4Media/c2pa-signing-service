@@ -15,7 +15,7 @@
   --brand-radius-sm: 12px;
   --md-text-font: "Manrope", sans-serif;
   --md-code-font: "IBM Plex Mono", monospace;
-  --brand-header-bg: linear-gradient(90deg, rgba(225, 6, 0, 0.98) 0%, rgba(185, 11, 0, 0.98) 100%);
+  --brand-header-bg: linear-gradient(180deg, #141414 0%, var(--brand-black) 100%);
   --brand-header-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
   --brand-header-title-width: min(38rem, calc(100% - 24rem));
   --brand-content-width: min(100%, 1600px);
@@ -62,7 +62,9 @@
   --brand-text-muted: rgba(255, 255, 255, 0.66);
   --brand-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
   --brand-hero-glow: radial-gradient(circle at top right, rgba(225, 6, 0, 0.24), transparent 38%);
-  --brand-lockup-bg: rgba(255, 255, 255, 0.05);
+  /* The S4M Platform lockup uses dark navy text designed for a light backdrop,
+     so its card stays light even though the rest of the page is dark. */
+  --brand-lockup-bg: rgba(247, 246, 243, 0.95);
 }
 
 /* Header */
@@ -99,21 +101,7 @@
   padding: 0;
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-}
-
-.md-header__button.md-logo::before {
-  content: "";
-  display: block;
-  width: 3.5rem;
-  height: 3.5rem;
-  flex: 0 0 auto;
-  background:
-    var(--brand-white)
-    url("../images/brand/logo-en-tete-blanche.png")
-    center / calc(100% - 0.7rem) calc(100% - 0.7rem)
-    no-repeat;
-  border-radius: 0.65rem;
+  gap: 0.65rem;
 }
 
 .md-header__button.md-logo img,
@@ -122,7 +110,6 @@
   width: auto;
   height: 2rem;
   object-fit: contain;
-  filter: brightness(0) invert(1);
 }
 
 .md-header__button[for="__drawer"] {
@@ -131,22 +118,49 @@
 }
 
 .md-header__title {
-  display: none;
-}
-
-.md-search {
-  flex: 0 0 clamp(12rem, 18vw, 15rem);
-  margin-left: auto;
-}
-
-.md-header__option,
-.md-header__button[for="__search"],
-.md-header__source {
-  display: none;
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .md-header__topic {
-  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.md-search {
+  flex: 0 1 clamp(7rem, 16vw, 15rem);
+  min-width: 0;
+}
+
+.brand-header-cta {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.05rem;
+  border-radius: 999px;
+  background: var(--md-primary-fg-color);
+  color: var(--brand-white);
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.brand-header-cta:hover,
+.brand-header-cta:focus {
+  background: var(--md-primary-fg-color--dark);
+  transform: translateY(-1px);
+  color: var(--brand-white);
+}
+
+.md-header__button[for="__search"],
+.md-header__source {
+  display: none;
 }
 
 .md-header__ellipsis,
@@ -166,20 +180,30 @@
   justify-content: flex-start;
 }
 
-@media screen and (max-width: 76.2344em) {
-}
-
 @media screen and (max-width: 59.9844em) {
+  .md-header__topic {
+    font-size: 0.9rem;
+  }
+
   .md-search {
-    display: none;
+    flex-basis: clamp(5.5rem, 22vw, 9rem);
   }
 }
 
 @media screen and (max-width: 44.9844em) {
-  .md-header__button.md-logo::before {
-    width: 2.8rem;
-    height: 2.8rem;
-    background-size: calc(100% - 0.5rem) calc(100% - 0.5rem);
+  .md-header__button.md-logo img,
+  .md-header__button.md-logo svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .md-header__topic {
+    display: none;
+  }
+
+  .brand-header-cta {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
   }
 }
 
