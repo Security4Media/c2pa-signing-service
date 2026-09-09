@@ -33,7 +33,7 @@ sync_poll_interval_ms = 250
 [worker]
 queue_capacity = 128
 max_concurrent_batches = 4
-default_max_files_parallel = 4
+max_files_parallel = 4
 
 [input_resolvers.s3]
 # profile = "my-aws-profile"
@@ -69,7 +69,7 @@ pipeline_config_path = "config/media-packager/media_packager_pipeline.toml"
 
 - `queue_capacity`: job queue size
 - `max_concurrent_batches`: maximum batches processed in parallel
-- `default_max_files_parallel`: default per-batch input parallelism
+- `max_files_parallel`: per-batch input parallelism, applied to every batch (requests cannot override it)
 
 ### `input_resolvers.s3`
 
