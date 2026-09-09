@@ -1,4 +1,5 @@
 ---
+title: C2PA Signing Service
 hide:
   - toc
   - path
@@ -10,15 +11,15 @@ hide:
       <span class="brand-pill">Security 4 Media Docs</span>
       <div class="brand-hero__headline">
         <h1 class="brand-hero__title">C2PA signing, packaging, and service operations.</h1>
-        <div class="brand-lockup brand-lockup--light">
-          <img src="images/brand/logo-en-tete-blanche.png" alt="Security 4 Media logo on a light background">
-        </div>
       </div>
       <p class="brand-hero__lede">
         This documentation covers the current HTTP service surface, runtime configuration, packaging flows,
         and operational paths for local and S3-backed deployments. The emphasis is practical: build the spec,
         call the API, and run the service with the feature profile you actually need.
       </p>
+      <a class="brand-hero__cta" href="https://security4media.org/membership/" target="_blank" rel="noopener">
+        Contact Us to access it today
+      </a>
       <div class="brand-hero__actions brand-card-grid">
         <a class="brand-card" href="guides/getting-started/">
           <p class="brand-card__eyebrow">Start Here</p>
@@ -38,8 +39,8 @@ hide:
       </div>
     </div>
     <div class="brand-hero__visual">
-      <div class="brand-lockup brand-lockup--dark">
-        <img src="images/brand/logo-en-tete-noir.png" alt="Security 4 Media logo on a dark background">
+      <div class="brand-lockup">
+        <img src="images/brand/s4m-platform-cac.png" alt="Security4Media Platform — Content Authenticity">
       </div>
     </div>
   </div>

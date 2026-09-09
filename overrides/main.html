@@ -1,0 +1,21 @@
+{#-
+  Theme override of zensical's packaged main.html, adding a homepage-specific
+  <title> so the docs homepage tab reads plain "C2PA Signing Service" instead
+  of "Index - C2PA Signing Service". Zensical's own page.is_homepage is never
+  populated (confirmed empirically), so homepage detection here goes by
+  page.url == "" (the site root) instead. This mirrors base.html's htmltitle
+  block otherwise, so non-homepage pages and the search index title are
+  unaffected.
+-#}
+{% extends "base.html" %}
+{% block htmltitle %}
+  {% if page.url == "" %}
+    <title>{{ config.site_name }}</title>
+  {% elif page.meta and page.meta.title %}
+    <title>{{ page.meta.title }} - {{ config.site_name }}</title>
+  {% elif page.title %}
+    <title>{{ page.title | striptags }} - {{ config.site_name }}</title>
+  {% else %}
+    <title>{{ config.site_name }}</title>
+  {% endif %}
+{% endblock %}
