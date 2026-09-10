@@ -38,7 +38,7 @@ variant = "modern"
 language = "en"
 custom_dir = "overrides"
 logo = "images/brand/s4m-icon-header.png"
-favicon = "images/brand/favicon.svg"
+favicon = "images/brand/favicon-s4m.png"
 features = [
   "navigation.sections",
   "navigation.indexes",
