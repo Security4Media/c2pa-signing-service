@@ -26,6 +26,9 @@ Additional runtime endpoint:
 
 - `/docs`
 
+Both stay open in a build with `oidc`. To send test requests from `/docs` to such a build, choose the `bearer`
+authentication and paste an access token ([Authentication](authentication.md)); the page does not store it.
+
 ## Public Docs-Site Raw Spec
 
 The public docs site serves a generated raw spec at `docs/api/openapi.json`.
@@ -36,10 +39,8 @@ That file is generated from the private service implementation and synchronized 
 make docs-sync-public
 ```
 
-The generation path uses the full documentation feature profile:
-
-- `openapi`
-- `s3`
+The generation builds with the `openapi` feature only: the schemas do not depend on `s3` or the other runtime features.
+The generated file documents authentication in every case, because it describes the API as deployed with `oidc`.
 
 ## Build The Public Docs Site
 

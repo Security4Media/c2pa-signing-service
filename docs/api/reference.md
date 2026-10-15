@@ -2,6 +2,10 @@
 
 This page covers behavior the OpenAPI spec doesn't capture: sync/async pairing, per-endpoint input constraints, custom assertions, parent provenance, and output placement. [openapi.json](openapi.json) is the source of truth for exact request/response schemas, field types, and status/error codes. It's generated from the private service implementation and never edited by hand here; browse it via the Swagger Editor link on the [docs homepage](../index.md). Use [cURL Examples](curl-examples.md) for runnable requests.
 
+## Authentication
+
+In a build with the `oidc` feature, every `/v2` route except `GET /v2/health` and `GET /v2/ready` needs `Authorization: Bearer <access token>`, and job submissions need a scope: `c2pa:sign` for the `/v2/c2pa/...` endpoints, `c2pa:package` for `/v2/package`. A client reads only its own jobs unless it has `c2pa:jobs:read:all`. See [Authentication](../guides/authentication.md) for tokens, scopes and the `401`/`403` answers.
+
 ## Health And Jobs
 
 ### `GET /v2/health`
@@ -10,7 +14,7 @@ Liveness and readiness probe. Returns `200 OK` with an empty body.
 
 ### `GET /v2/jobs/{id}`
 
-Retrieves the current snapshot of a batch job, async or sync: `job_id`, top-level `status`, `results`, and `timing`. `404 JOB_NOT_FOUND` if the ID doesn't exist.
+Retrieves the current snapshot of a batch job, async or sync: `job_id`, top-level `status`, `results`, and `timing`. `404 JOB_NOT_FOUND` if the ID doesn't exist, or, in a build with `oidc`, if the job belongs to another client.
 
 ## C2PA Video
 
@@ -147,7 +151,12 @@ For `local`, `base_prefix` is `output_sinks.local.base_dir`; for `s3` it is `out
 
 - Enables S3-backed remote inputs
 - Enables request-selected S3 output destinations
-- The docs build uses the full documentation profile and generates the raw spec with `openapi` and `s3` enabled
+- The public raw spec is generated with `openapi` enabled
+
+### `oidc`
+
+- Requires a bearer access token on every `/v2` route except the probes, and a scope for job submissions
+- Requires `[auth.oidc]`; see [Authentication](../guides/authentication.md)
 
 ## Watermark Placeholders
 
@@ -165,7 +174,7 @@ For `local`, `base_prefix` is `output_sinks.local.base_dir`; for `s3` it is `out
 
 ## Error Model
 
-Errors share one shape (`ApiErrorResponse`: `error.code`, `error.message`, optional `error.details`). The OpenAPI spec lists every error code per endpoint with example payloads. `JOB_NOT_FOUND` and `REQUEST_TIMEOUT` map directly to the job-polling behavior described above.
+Errors share one shape (`ApiErrorResponse`: `error.code`, `error.message`, optional `error.details`). The OpenAPI spec lists every error code per endpoint with example payloads. `JOB_NOT_FOUND` and `REQUEST_TIMEOUT` map directly to the job-polling behavior described above. In a build with `oidc`, `UNAUTHORIZED` (`401`) and `FORBIDDEN` (`403`) come with a `WWW-Authenticate` challenge; see [Authentication](../guides/authentication.md#errors).
 
 ## Operational Notes
 
