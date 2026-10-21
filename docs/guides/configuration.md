@@ -71,6 +71,28 @@ pipeline_config_path = "config/media-packager/media_packager_pipeline.toml"
 - `max_concurrent_batches`: maximum batches processed in parallel
 - `max_files_parallel`: per-batch input parallelism, applied to every batch (requests cannot override it)
 
+### `auth.oidc`
+
+Required in a build with the `oidc` feature, refused without it (startup and `--check-config` fail either way). See
+[Authentication](authentication.md) for what callers see and what the identity provider must provide.
+
+- `issuer` (required): the exact `iss` of trusted tokens; discovery is read from `{issuer}/.well-known/openid-configuration`. Must be `https`, except on a loopback host for a local provider
+- `audience` (required): this service's identifier as it appears in the token's `aud`
+- `jwks_uri`: where to fetch the signing keys; default from the discovery document, whose `jwks_uri` must then have the issuer's scheme, host and port. Setting it skips discovery (and is the way to use keys on another host), and `issuer` must then not end with `/`
+- `algorithms`: allowed signature algorithms, asymmetric only; default `["RS256"]`
+- `token_type`: the payload `typ` an access token must carry; default `"Bearer"`
+- `leeway`: clock skew allowed on `exp`, `nbf` and `iat`; default `"30s"`, at most `"5m"`
+- `http_timeout`: per discovery or key request; default `"5s"`
+- `key_max_age`: how long a fetched key set is used before the next request refreshes it; default `"15m"`, at most `"24h"`
+- `refresh_cooldown`: minimum gap between key fetches after a failure or an unknown key id; default `"30s"`, at most `key_max_age`. Keep it well below `key_max_age`: after a failed fetch it also delays the next refresh
+- `startup_wait`: how long startup retries discovery and the first key fetch; default `"30s"`
+
+```toml
+[auth.oidc]
+issuer = "https://keycloak.example.org/realms/example"
+audience = "c2pa-claim-generator"
+```
+
 ### `input_resolvers.s3`
 
 - presence of this section enables S3 resolver bootstrap
@@ -116,8 +138,9 @@ These sections reference specialized processor configuration files instead of in
 - `openapi`: exposes `/openapi.json`
 - `scalar-docs`: extends `openapi` and exposes `/docs`
 - `s3`: enables S3-backed input resolvers and request-selectable S3 outputs
+- `oidc`: requires an OpenID Connect access token on every `/v2` request except the probes, and requires `[auth.oidc]`; see [Authentication](authentication.md)
 
-The synchronized public OpenAPI file is generated from the private service implementation using the documentation feature profile, which enables both `openapi` and `s3`.
+The synchronized public OpenAPI file is generated from the private service implementation with the `openapi` feature. It documents authentication in every case, because it describes the API as deployed with `oidc`.
 
 If `[input_resolvers.s3]` or `[output_sinks.s3]` is configured without building
 the service with `--features s3`, startup fails.

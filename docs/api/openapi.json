@@ -3,7 +3,7 @@
   "info": {
     "title": "C2PA Signing Service HTTP API",
     "description": "HTTP API for signing, packaging, and querying C2PA processing jobs.",
-    "version": "0.1.11"
+    "version": "0.2.0"
   },
   "paths": {
     "/v2/c2pa/audio": {
@@ -67,6 +67,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Unexpected server error",
             "content": {
@@ -97,7 +145,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/c2pa/fragmented": {
@@ -161,6 +216,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Unexpected server error",
             "content": {
@@ -191,7 +294,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/c2pa/package": {
@@ -255,6 +365,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Unexpected server error",
             "content": {
@@ -285,7 +443,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/c2pa/video": {
@@ -349,6 +514,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Unexpected server error",
             "content": {
@@ -379,7 +592,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/health": {
@@ -387,13 +607,18 @@
         "tags": [
           "health"
         ],
-        "summary": "Health check endpoint",
+        "summary": "Liveness: is this process still capable of doing work at all?",
+        "description": "Fails only when a worker this process started has exited, which is\nunrecoverable in-process: the HTTP server would go on accepting\nsubmissions that nothing will ever consume. Deliberately does no I/O, so a\nstore outage does not answer this question; otherwise a single database\nblip would restart every instance at once and turn a degradation into an\noutage.\n\nThe contract is the status code. Wiring it to a container health check, a\nprocess supervisor or a periodic request is a deployment decision.",
         "operationId": "getHealth",
         "responses": {
           "200": {
-            "description": "Service is healthy"
+            "description": "Process is live and its workers are running"
+          },
+          "503": {
+            "description": "A worker has exited; this instance cannot process work"
           }
-        }
+        },
+        "security": []
       }
     },
     "/v2/jobs/{id}": {
@@ -425,8 +650,32 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Job was not found",
+            "description": "Job was not found. Another client's job answers the same, so ids cannot be probed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -535,6 +784,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:package scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:package\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:package"
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Unexpected server error",
             "content": {
@@ -565,7 +862,33 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:package"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Readiness: should this instance be given more work right now?",
+        "description": "Unlike liveness this may touch the job store, because an instance that\ncannot reach it can only fail whatever it accepts. A failure here is\nexpected to be transient and must not cause the instance to be replaced.",
+        "operationId": "getReady",
+        "responses": {
+          "200": {
+            "description": "Ready to accept work"
+          },
+          "503": {
+            "description": "Not ready; the reason is returned as plain text"
+          }
+        },
+        "security": []
       }
     },
     "/v2/sync/c2pa/audio": {
@@ -629,6 +952,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "408": {
             "description": "Synchronous wait timed out",
             "content": {
@@ -675,7 +1046,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/sync/c2pa/fragmented": {
@@ -739,6 +1117,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "408": {
             "description": "Synchronous wait timed out",
             "content": {
@@ -785,7 +1211,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/sync/c2pa/package": {
@@ -849,6 +1282,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "408": {
             "description": "Synchronous wait timed out",
             "content": {
@@ -895,7 +1376,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/sync/c2pa/video": {
@@ -959,6 +1447,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:sign scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:sign\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:sign"
+                  }
+                }
+              }
+            }
+          },
           "408": {
             "description": "Synchronous wait timed out",
             "content": {
@@ -1005,7 +1541,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:sign"
+            ]
+          }
+        ]
       }
     },
     "/v2/sync/package": {
@@ -1069,6 +1612,54 @@
               }
             }
           },
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The token is valid but lacks the c2pa:package scope this operation requires.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer error=\"insufficient_scope\", scope=\"c2pa:package\"`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "The caller is not permitted to do this: missing required scope c2pa:package"
+                  }
+                }
+              }
+            }
+          },
           "408": {
             "description": "Synchronous wait timed out",
             "content": {
@@ -1115,7 +1706,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": [
+              "c2pa:package"
+            ]
+          }
+        ]
       }
     },
     "/v2/watermark": {
@@ -1127,6 +1725,30 @@
         "description": "Softbinding watermark creation is not implemented yet.",
         "operationId": "submitWatermarkJob",
         "responses": {
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
           "501": {
             "description": "Coming soon",
             "content": {
@@ -1161,6 +1783,30 @@
           }
         ],
         "responses": {
+          "401": {
+            "description": "No valid bearer access token: none was sent, or the one sent was refused. The body is the same for every cause.",
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "RFC 6750 challenge: `Bearer` when the request carried no token; `Bearer error=\"invalid_token\"` when the token was refused (for example malformed, expired, wrongly signed, not an access token, or not issued for this service)."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "A valid bearer access token is required"
+                  }
+                }
+              }
+            }
+          },
           "501": {
             "description": "Coming soon",
             "content": {
@@ -1521,9 +2167,43 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "type": "object",
+            "description": "A file inside the input folder this job is already processing,\naddressed by its path relative to that folder's root\n(`\"1/init_1.mp4\"`, `\"mezzanine.mov\"`).\n\nNothing is fetched: a folder input is downloaded in full before signing\nstarts, so any file in it can act as the parent, including one the\nmedia scanner does not pick up for signing. The path is resolved per\ninput, against *that* input's folder.\n\n**Supported by `/v2/c2pa/package` and `/v2/sync/c2pa/package` only.**\nThe other signing endpoints reject it; extending them is tracked as\nissue #181.",
+            "required": [
+              "path",
+              "type"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "input_relative_path"
+                ]
+              }
+            }
           }
         ],
-        "description": "Allowed input types for a file-based parent. Only single-file variants."
+        "description": "Where the media file behind a file-based parent comes from.\n\nThe first two are locators the service fetches on its own. The third is\nnot a locator at all: it names a file the caller has already sent as part\nof this job.",
+        "examples": [
+          {
+            "type": "local_file_path",
+            "path": "./fixtures/input/mezzanine.mp4"
+          },
+          {
+            "type": "remote_file_url",
+            "url": "s3://media-bucket/input/mezzanine.mp4",
+            "filename_hint": "mezzanine.mp4"
+          },
+          {
+            "type": "input_relative_path",
+            "path": "mezzanine.mp4"
+          }
+        ]
       },
       "ApiParentOverride": {
         "type": "object",
@@ -1804,7 +2484,7 @@
               },
               {
                 "$ref": "#/components/schemas/ApiParent",
-                "description": "Optional parent manifest to attach as a provenance ingredient."
+                "description": "Optional parent manifest to attach as a provenance ingredient.\n\nThis is the only endpoint that also accepts an `input_relative_path`\nparent source, naming a file inside the input folder it is already\npackaging (see `ApiParentFileSource`)."
               }
             ]
           },
@@ -1899,6 +2579,32 @@
             "output": {
               "type": "local",
               "name": "exports"
+            }
+          },
+          {
+            "inputs": [
+              {
+                "type": "remote_folder_url",
+                "url": "s3://media-bucket/input/publication/"
+              }
+            ],
+            "params": {
+              "playlist_pattern": "**/*.m3u8",
+              "init_pattern": "**/init*.mp4",
+              "frag_pattern": "seg*.m4s",
+              "parent": {
+                "type": "file",
+                "source": {
+                  "type": "input_relative_path",
+                  "path": "mezzanine.mp4"
+                }
+              }
+            },
+            "output": {
+              "type": "s3",
+              "bucket": "processed-media",
+              "prefix": "exports/c2pa",
+              "name": "demo-publication"
             }
           }
         ]
@@ -2075,7 +2781,7 @@
       },
       "PackageParams": {
         "type": "object",
-        "description": "Parameters for media packaging.\n\nThe output destination and name now live in the request `output` section, so\nthis carries no fields; it is retained for a stable request/schema shape.",
+        "description": "Parameters for media packaging.\n\nThe output destination and name are set in the request `output` section.\nThis type has no fields and keeps the request schema shape stable.",
         "example": {}
       },
       "PackageRequest": {
@@ -2174,8 +2880,21 @@
           }
         }
       }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Access token (a JWT) issued by the deployment's OpenID Connect provider, normally to a machine client through the OAuth 2.0 client credentials grant. Send it as `Authorization: Bearer <token>`.\n\nEvery operation except the health and readiness probes needs a token. The submit and run operations also list the scope they need, and a token without it gets 403: `c2pa:sign` (submit C2PA signing jobs, including package and sign) or `c2pa:package` (submit packaging-only jobs). `c2pa:jobs:read:all` lets a client read any job; without it a client reads only the jobs it submitted, and another client's job answers 404 like an unknown id.\n\nOnly builds with the `oidc` feature enforce this; a build without it accepts every request."
+      }
     }
   },
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
   "tags": [
     {
       "name": "health",

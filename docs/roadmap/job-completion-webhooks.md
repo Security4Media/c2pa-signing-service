@@ -31,4 +31,4 @@ Webhook notifications reduce integration friction for external systems that need
 
 - [API Reference](../api/reference.md)
 - [Getting Started](../guides/getting-started.md)
-- [Authentication And Authorization](authentication-and-authorization.md)
+- [Authentication](../guides/authentication.md)

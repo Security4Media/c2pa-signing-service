@@ -3,6 +3,23 @@
 Examples in this page target the current v2 HTTP surface implemented by `service-http`.
 For the canonical route contract, see [API Reference](reference.md).
 
+## Authentication
+
+The examples below call a service without authentication. A service built with `oidc` also needs an access token on
+every `/v2` request except the probes ([Authentication](../guides/authentication.md)): get one with the client credentials
+grant, then add the header to any example.
+
+```bash
+TOKEN=$(curl -s -u "${CLIENT_ID}:${CLIENT_SECRET}" \
+  -d grant_type=client_credentials \
+  "${ISSUER}/protocol/openid-connect/token" | jq -r .access_token)
+
+curl -X POST http://localhost:8080/v2/c2pa/video \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '...'
+```
+
 ## Health Check
 
 ```bash
