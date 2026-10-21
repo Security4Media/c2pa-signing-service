@@ -106,7 +106,8 @@ depth and ages and is meant to be scraped from inside the network; keep these ro
 The identity provider must:
 
 - publish an OpenID Connect discovery document at `{issuer}/.well-known/openid-configuration`, with a `jwks_uri` for
-  its signing keys;
+  its signing keys on the issuer's own scheme, host and port (set `jwks_uri` in the configuration for keys served
+  elsewhere);
 - issue access tokens as JWTs signed with an asymmetric algorithm (`RS256` by default), with a key id (`kid`) in the
   header that names a key in that set;
 - put `exp`, `iat` and a payload `typ` equal to the configured `token_type` (`Bearer` by default, as Keycloak writes

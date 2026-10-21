@@ -78,13 +78,13 @@ Required in a build with the `oidc` feature, refused without it (startup and `--
 
 - `issuer` (required): the exact `iss` of trusted tokens; discovery is read from `{issuer}/.well-known/openid-configuration`. Must be `https`, except on a loopback host for a local provider
 - `audience` (required): this service's identifier as it appears in the token's `aud`
-- `jwks_uri`: where to fetch the signing keys; default from the discovery document. Setting it skips discovery, and `issuer` must then not end with `/`
+- `jwks_uri`: where to fetch the signing keys; default from the discovery document, whose `jwks_uri` must then have the issuer's scheme, host and port. Setting it skips discovery (and is the way to use keys on another host), and `issuer` must then not end with `/`
 - `algorithms`: allowed signature algorithms, asymmetric only; default `["RS256"]`
 - `token_type`: the payload `typ` an access token must carry; default `"Bearer"`
 - `leeway`: clock skew allowed on `exp`, `nbf` and `iat`; default `"30s"`, at most `"5m"`
 - `http_timeout`: per discovery or key request; default `"5s"`
 - `key_max_age`: how long a fetched key set is used before the next request refreshes it; default `"15m"`, at most `"24h"`
-- `refresh_cooldown`: minimum gap between key fetches after a failure or an unknown key id; default `"30s"`
+- `refresh_cooldown`: minimum gap between key fetches after a failure or an unknown key id; default `"30s"`, at most `key_max_age`. Keep it well below `key_max_age`: after a failed fetch it also delays the next refresh
 - `startup_wait`: how long startup retries discovery and the first key fetch; default `"30s"`
 
 ```toml
